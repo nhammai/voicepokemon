@@ -1,2 +1,2 @@
 # voicepokemon
-pokemon game can control with voice 
+You can play pokemon game battle with your own voice 
