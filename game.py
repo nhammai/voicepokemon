@@ -179,7 +179,7 @@ def check_winner():
             if not ((pikachu.defeated and current_time - pikachu.attacked_time >= 5000) or (meowth.defeated and current_time - meowth.attacked_time >= 5000)):
                 screen.blit(ko_img, (200, 200))
 
-        if (pikachu.defeated and current_time - pikachu.attacked_time >= 5000) or (meowth.defeated and current_time - meowth.attacked_time >= 5000):
+        if (pikachu.defeated and current_time - pikachu.attacked_time >= 6000) or (meowth.defeated and current_time - meowth.attacked_time >= 6000):
             pikachu.winner_banner_displayed = True  # Add this line
             meowth.winner_banner_displayed = True  # Add this line
             if pikachu.hp > meowth.hp:
