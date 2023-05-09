@@ -33,6 +33,9 @@ meowthko_img = pygame.transform.scale(meowthko_img, (250, 250))
 ko_img = pygame.image.load("KO.png")
 ko_img = pygame.transform.scale(ko_img, (250, 125))  # Adjust the size as needed
 
+pikachu_front_img = pygame.image.load("pikachu_front_img.png")
+pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
+
 
 
 # Load sounds
@@ -45,6 +48,9 @@ meowth_attack_sound = pygame.mixer.Sound("./sounds/meowth_attack.wav")
 ko_sound = pygame.mixer.Sound("./sounds/KObig.wav")
 ko_sound.set_volume(1.0)  # Adjust the volume; 1.0 is the maximum volume
 
+
+victory_full_sound = pygame.mixer.Sound("./sounds/victorfull.wav")
+victory_full_sound.set_volume(0.9)
 
 # Animation
 def load_animation_images(folder_path):
@@ -78,6 +84,9 @@ class Pokemon:
         self.defeated = False  # Add this line
         self.ko_sound_played = False  # Add this line
         self.ko_displayed = False  # Add this line
+        self.winner_banner_displayed = False  # Add this line
+        self.sound_played = False  # Add this line
+        
 
 
     def attack(self, opponent):
@@ -126,29 +135,31 @@ battle_music.play(-1)
 
 # Function to draw the health bars
 def draw_health_bars():
-    hp_bar_width = 200
-    hp_bar_height = 15
+    if not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):  # Update this line
 
-    # Position for Pikachu's HP bar
-    pikachu_hp_bar_x = width * 0.20
-    pikachu_hp_bar_y = height * 0.65
+        hp_bar_width = 200
+        hp_bar_height = 15
 
-    # Position for Meowth's HP bar
-    meowth_hp_bar_x = width * 0.70
-    meowth_hp_bar_y = height * 0.28
+        # Position for Pikachu's HP bar
+        pikachu_hp_bar_x = width * 0.20
+        pikachu_hp_bar_y = height * 0.65
 
-    # Background
-    pygame.draw.rect(screen, (255, 0, 0), (pikachu_hp_bar_x, pikachu_hp_bar_y, hp_bar_width, hp_bar_height))
-    pygame.draw.rect(screen, (255, 0, 0), (meowth_hp_bar_x, meowth_hp_bar_y, hp_bar_width, hp_bar_height))
+        # Position for Meowth's HP bar
+        meowth_hp_bar_x = width * 0.70
+        meowth_hp_bar_y = height * 0.28
 
-    # Health
-    pygame.draw.rect(screen, (0, 0, 255), (pikachu_hp_bar_x, pikachu_hp_bar_y, pikachu.hp * hp_bar_width // 100, hp_bar_height))
-    pygame.draw.rect(screen, (0, 0, 255), (meowth_hp_bar_x, meowth_hp_bar_y, meowth.hp * hp_bar_width // 100, hp_bar_height))
-    # HP labels
-    font = pygame.font.Font(None, 24)
-    hp_label = font.render("HP", True, (255, 255, 255))
-    screen.blit(hp_label, (pikachu_hp_bar_x - 30, pikachu_hp_bar_y + 5))
-    screen.blit(hp_label, (meowth_hp_bar_x - hp_label.get_width() - 10, meowth_hp_bar_y + 5))
+        # Background
+        pygame.draw.rect(screen, (255, 0, 0), (pikachu_hp_bar_x, pikachu_hp_bar_y, hp_bar_width, hp_bar_height))
+        pygame.draw.rect(screen, (255, 0, 0), (meowth_hp_bar_x, meowth_hp_bar_y, hp_bar_width, hp_bar_height))
+
+        # Health
+        pygame.draw.rect(screen, (0, 0, 255), (pikachu_hp_bar_x, pikachu_hp_bar_y, pikachu.hp * hp_bar_width // 100, hp_bar_height))
+        pygame.draw.rect(screen, (0, 0, 255), (meowth_hp_bar_x, meowth_hp_bar_y, meowth.hp * hp_bar_width // 100, hp_bar_height))
+        # HP labels
+        font = pygame.font.Font(None, 24)
+        hp_label = font.render("HP", True, (255, 255, 255))
+        screen.blit(hp_label, (pikachu_hp_bar_x - 30, pikachu_hp_bar_y + 5))
+        screen.blit(hp_label, (meowth_hp_bar_x - hp_label.get_width() - 10, meowth_hp_bar_y + 5))
 
 # Function to check the winner and display the result
 def check_winner():
@@ -164,15 +175,34 @@ def check_winner():
             ko_sound.play()
             meowth.ko_sound_played = True
 
-        if (pikachu.defeated and current_time - pikachu.attacked_time >= 2000) or (meowth.defeated and current_time - meowth.attacked_time >= 2000):
-            screen.blit(ko_img, (200, 200))
+        if (pikachu.defeated and current_time - pikachu.attacked_time >= 3000) or (meowth.defeated and current_time - meowth.attacked_time >= 3000):
+            if not ((pikachu.defeated and current_time - pikachu.attacked_time >= 5000) or (meowth.defeated and current_time - meowth.attacked_time >= 5000)):
+                screen.blit(ko_img, (200, 200))
 
         if (pikachu.defeated and current_time - pikachu.attacked_time >= 5000) or (meowth.defeated and current_time - meowth.attacked_time >= 5000):
+            pikachu.winner_banner_displayed = True  # Add this line
+            meowth.winner_banner_displayed = True  # Add this line
+            if pikachu.hp > meowth.hp:
+                pikachu.image = pikachu_front_img
+
             font = pygame.font.Font(None, 72)
             winner = "Pikachu" if pikachu.hp > meowth.hp else "Meowth"
             text = font.render(f"{winner} wins!", True, (255, 255, 255))
             text_rect = text.get_rect(center=(width // 2, int(height * 0.1)))
+
+            pikachu_winner_pos_x = desired_x_pika -50
+            pikachu_winner_pos_y = desired_y_pika - 60  # Adjust this value to move Pikachu's image higher
+            screen.blit(pikachu.image, (pikachu_winner_pos_x, pikachu_winner_pos_y))
+
             screen.blit(text, text_rect)
+
+        if pikachu.winner_banner_displayed or meowth.winner_banner_displayed:
+            if not pikachu.sound_played and not meowth.sound_played:
+                victory_full_sound.play()
+                pikachu.sound_played = True
+                meowth.sound_played = True
+                battle_music.stop()  # Stop the background sound
+
 
 
 
@@ -206,22 +236,19 @@ while True:
     screen.blit(bg_img, (0, 0))
 
     if pikachu.visible:
-        screen.blit(pikachu.image, (desired_x_pika, desired_y_pika))
+        if not pikachu.winner_banner_displayed:
+            screen.blit(pikachu.image, (desired_x_pika, desired_y_pika))
 
     if meowth.visible:
         screen.blit(meowth.image, (desired_x_meo, desired_y_meo))
     elif meowth.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
         screen.blit(meowthko_img, (desired_x_meo, desired_y_meo))
 
-
     if animation_playing:
         if player_turn:
             animation_playing = not meowth.play_animation(screen, desired_x_pika, desired_y_pika, 1000)
         else:
             animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 3000)
-
-
-    
 
     draw_health_bars()
     check_winner()
