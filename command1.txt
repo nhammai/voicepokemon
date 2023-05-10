@@ -1,5 +1,3 @@
-
-
 Command: thunder
 
-Amount: 500000
+Amount: 1000000

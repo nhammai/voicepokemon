@@ -3,7 +3,7 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = "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"
 
 llm = OpenAI(temperature=0.9)
 prompt = PromptTemplate(
@@ -14,13 +14,13 @@ prompt = PromptTemplate(
         "If it is similar to \"Phóng điện x V\" with Phóng điện as the skill the Pokémon uses and x as the amount of V to attack.\n\n"
         "Now I just need to translate the sentence I type to become the standard command to add it to my game\n\n"
         "Example: \"Phóng điện 10000 vôn\" then you print\n\n"
-        "Command: thunder\n\n"
+        "Command: electric discharge\n\n"
         "Amount: 10000\n\n"
         "\"điện 100000 V\" then you print\n\n"
-        "Command: thunder\n\n"
+        "Command: electric discharge\n\n"
         "Amount: 100000\n\n"
         "Example: \"pikachu phóng điện\" then you print\n\n"
-        "Command: thunder\n\n"
+        "Command: electric discharge\n\n"
         "Amount: 1000\n\n"
         "The amount default if I don't say is 1000\n\n"
         "Analyse it to the command and amount\n\n"

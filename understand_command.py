@@ -27,4 +27,10 @@ def read_command(filename):
     return command
 
 
-from understand_command import read_command
+
+# cm = read_command("command.txt")
+
+# if (cm["skill"] == "thunder"):
+#     print("THUNNDER")
+# else:
+#     print("normal")

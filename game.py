@@ -4,6 +4,10 @@ import sys
 import random
 import os
 
+
+
+
+
 pygame.init()
 
 # Game window size
@@ -124,8 +128,19 @@ pikachu_animation_offset_y = -20
 
 meowth_animation_offset_x = 100
 meowth_animation_offset_y = 100
-pikachu = Pokemon("Pikachu", pikachu_img, 100, 40, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
+pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
 meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", meowth_attack_sound, scratch_imgs, meowth_animation_offset_x, meowth_animation_offset_y)
+
+from understand_command import read_command
+
+# cm = read_command("command.txt")
+
+# if (cm["skill"] == "thunder"):
+#     pikachu.attack_name = "Thunderbolt"
+#     pikachu.attack_power = cm["amount"]*40/10000
+#     print(pikachu.attack_power)
+    
+
 
 # Desired position for Pikachu
 desired_x_pika = 115
@@ -230,7 +245,14 @@ while True:
 
         if event.type == KEYDOWN:
             if event.key == K_SPACE and not animation_playing and player_turn:
+                cm = read_command("command.txt")
+
+                if (cm["skill"] == "thunder"):
+                    pikachu.attack_name = "Thunderbolt"
+                    pikachu.attack_power = cm["amount"]*40/10000
+                    print(pikachu.attack_power)
                 pikachu.attack(meowth)
+                pikachu.attack_power = 40 # return to normal attack power
                 meowth.attacked_time = pygame.time.get_ticks()
                 last_pikachu_attack = pygame.time.get_ticks()
                 animation_playing = True

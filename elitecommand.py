@@ -3,7 +3,7 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = "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"
 
 llm = OpenAI(temperature=0.9)
 prompt = PromptTemplate(
@@ -25,12 +25,17 @@ prompt = PromptTemplate(
         "The amount default if I don't say is 1000\n\n"
         "Analyse it to the command and amount\n\n"
         "Now the sentence is: {sentence}\n\n"
-    
     ),
 )
 
 chain = LLMChain(llm=llm, prompt=prompt)
 
-sentence = "Pikachu phóng điện mười bảy nghìn vôn"
+# Read the sentence from the file 'rawtext.txt'
+with open('rawtext.txt', 'r', encoding='utf-8') as file:
+    sentence = file.read().strip()
+
 result = chain.run(sentence)
-print(result)
+
+# Write the result to the file 'command.txt'
+with open('command.txt', 'w', encoding='utf-8') as file:
+    file.write(result)

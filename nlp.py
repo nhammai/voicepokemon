@@ -25,12 +25,13 @@ prompt = PromptTemplate(
         "The amount default if I don't say is 1000\n\n"
         "Analyse it to the command and amount\n\n"
         "Now the sentence is: {sentence}\n\n"
-    
     ),
 )
 
 chain = LLMChain(llm=llm, prompt=prompt)
 
-sentence = "Pikachu phóng điện mười bảy nghìn vôn"
+sentence = open("rawtext.txt", "r", encoding="utf-8").read().strip()
 result = chain.run(sentence)
-print(result)
+
+with open("command.txt", "w", encoding="utf-8") as f:  # Use 'w' mode to overwrite the file
+    f.write(result)
