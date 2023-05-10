@@ -52,6 +52,13 @@ ko_sound.set_volume(1.0)  # Adjust the volume; 1.0 is the maximum volume
 victory_full_sound = pygame.mixer.Sound("./sounds/victorfull.wav")
 victory_full_sound.set_volume(0.9)
 
+pikachu_sound = pygame.mixer.Sound("./sounds/pikapika.wav")
+
+def play_pikachu_sound():
+    pygame.mixer.Sound.play(pikachu_sound)
+
+
+
 # Animation
 def load_animation_images(folder_path):
     animation_imgs = []
@@ -210,6 +217,11 @@ def check_winner():
 # Main game loop
 animation_playing = False
 
+
+
+meowth_attack_delay = 4000  # 4 seconds in milliseconds
+last_pikachu_attack = 0
+
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -217,16 +229,21 @@ while True:
             sys.exit()
 
         if event.type == KEYDOWN:
-            if event.key == K_SPACE and not animation_playing:
-                if player_turn:
-                    pikachu.attack(meowth)
-                    meowth.attacked_time = pygame.time.get_ticks()
-                else:
-                    meowth.attack(pikachu)
-                    pikachu.attacked_time = pygame.time.get_ticks()
-
+            if event.key == K_SPACE and not animation_playing and player_turn:
+                pikachu.attack(meowth)
+                meowth.attacked_time = pygame.time.get_ticks()
+                last_pikachu_attack = pygame.time.get_ticks()
                 animation_playing = True
                 player_turn = not player_turn
+            elif event.key == K_p:
+                play_pikachu_sound()
+
+    current_time = pygame.time.get_ticks()
+    if not player_turn and not animation_playing and current_time - last_pikachu_attack >= meowth_attack_delay:
+        meowth.attack(pikachu)
+        pikachu.attacked_time = pygame.time.get_ticks()
+        animation_playing = True
+        player_turn = not player_turn
 
     current_time = pygame.time.get_ticks()
 
