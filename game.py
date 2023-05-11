@@ -3,7 +3,7 @@ from pygame.locals import *
 import sys
 import random
 import os
-
+import time
 
 
 
@@ -61,6 +61,7 @@ pikachu_sound = pygame.mixer.Sound("./sounds/pikapika.wav")
 def play_pikachu_sound():
     pygame.mixer.Sound.play(pikachu_sound)
 
+superthundersound = pygame.mixer.Sound("./sounds/pikachu_attack.wav")
 
 
 # Animation
@@ -74,6 +75,10 @@ def load_animation_images(folder_path):
     return animation_imgs
 
 thunder_imgs = load_animation_images("animation/thunder")
+thunder_weak_imgs = load_animation_images("animation/thunder_weak")
+
+thunder_super = load_animation_images("animation/thunder_tim")
+
 scratch_imgs = load_animation_images("animation/scratch")
 
 class Pokemon:
@@ -234,7 +239,7 @@ animation_playing = False
 
 
 
-meowth_attack_delay = 4000  # 4 seconds in milliseconds
+meowth_attack_delay = 6000  # 6 seconds in milliseconds
 last_pikachu_attack = 0
 
 while True:
@@ -245,23 +250,40 @@ while True:
 
         if event.type == KEYDOWN:
             if event.key == K_SPACE and not animation_playing and player_turn:
-                cm = read_command("command.txt")
+                cm = read_command("command.txt") ## read the amount to modify power
 
                 if (cm["skill"] == "thunder"):
                     pikachu.attack_name = "Thunderbolt"
                     pikachu.attack_power = cm["amount"]*40/10000
                     print(pikachu.attack_power)
+                if(pikachu.attack_power <40): # change the animation depend on the attack power
+                    pikachu.animation_imgs = thunder_weak_imgs
+                if(pikachu.attack_power>400):
+                    pikachu.animation_imgs = thunder_super
+                    superthundersound.play()
+                    superthundersound.play()
+
+                else:
+                    pikachu.animation_imgs = thunder_imgs
                 pikachu.attack(meowth)
                 pikachu.attack_power = 40 # return to normal attack power
-                meowth.attacked_time = pygame.time.get_ticks()
-                last_pikachu_attack = pygame.time.get_ticks()
-                animation_playing = True
+                
+                # meowth.attacked_time = pygame.time.get_ticks()
+                # last_pikachu_attack = pygame.time.get_ticks()
+                # animation_playing = True
+                # player_turn = not player_turn
+                # if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack >= meowth_attack_delay:
+                #     meowth.attack(pikachu)
+                #     pikachu.attacked_time = pygame.time.get_ticks()
                 player_turn = not player_turn
+                animation_playing = True
+
             elif event.key == K_p:
                 play_pikachu_sound()
 
     current_time = pygame.time.get_ticks()
-    if not player_turn and not animation_playing and current_time - last_pikachu_attack >= meowth_attack_delay:
+    if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack >= meowth_attack_delay:
+        time.sleep(1)  
         meowth.attack(pikachu)
         pikachu.attacked_time = pygame.time.get_ticks()
         animation_playing = True
