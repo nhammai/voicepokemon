@@ -75,7 +75,7 @@ def speech2text():
     wf.close()
 
     # Load the audio file
-    with sr.AudioFile('dien.wav') as source:
+    with sr.AudioFile('output.wav') as source:
         audio = recognizer.record(source)
 
     # Transcribe the audio using Google Web Speech API

@@ -10,7 +10,7 @@ import pyautogui  # Import pyautogui
 import keyboard
 
 # Do text to command with open ai api
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 
 llm = OpenAI(temperature=0.9)
 prompt = PromptTemplate(
@@ -85,6 +85,7 @@ def main():
                 speech2command()
                 keyboard.press('space')
                 keyboard.release('space')
+                os.remove("output.wav")
 
     except KeyboardInterrupt:
         print("Stopping...")

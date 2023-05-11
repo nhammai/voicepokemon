@@ -251,11 +251,14 @@ while True:
         if event.type == KEYDOWN:
             if event.key == K_SPACE and not animation_playing and player_turn:
                 cm = read_command("command.txt") ## read the amount to modify power
-
-                if (cm["skill"] == "thunder"):
-                    pikachu.attack_name = "Thunderbolt"
-                    pikachu.attack_power = cm["amount"]*40/10000
-                    print(pikachu.attack_power)
+            # try catch
+                try:
+                    if (cm["skill"] == "thunder"):
+                        pikachu.attack_name = "Thunderbolt"
+                        pikachu.attack_power = cm["amount"]*40/10000
+                        print(pikachu.attack_power)
+                except:
+                    pikachu.attack_power = 40
                 if(pikachu.attack_power <40): # change the animation depend on the attack power
                     pikachu.animation_imgs = thunder_weak_imgs
                 if(pikachu.attack_power>400):
