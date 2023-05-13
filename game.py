@@ -4,7 +4,7 @@ import sys
 import random
 import os
 import time
-
+from understand_command import read_command
 
 
 
@@ -44,7 +44,7 @@ pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
 
 # Load sounds
 battle_music = pygame.mixer.Sound("./sounds/battle_music.mp3")
-battle_music.set_volume(0.4)  # Add this line to adjust the volume
+battle_music.set_volume(0.2)  # Add this line to adjust the volume
 
 pikachu_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
 meowth_attack_sound = pygame.mixer.Sound("./sounds/meowth_attack.wav")
@@ -96,15 +96,27 @@ def draw_button(screen, message, x, y, w, h, ic, ac, action=None):
     
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    # print(click)
+
+    # Increase the button size
+    w += 20  # Increase the width
+    h += 10  # Increase the height
+
+    # Draw button with rounded corners
+    rect = pygame.Rect(x, y, w, h)
+    alpha = 0  # This makes corners invisible
+
+    # Draw the rectangles that will be used for creating rounded corners
+    pygame.draw.rect(screen, (0, 0, 0, alpha), rect, border_radius=25)
+    pygame.draw.rect(screen, ic, rect.inflate(-4, -4), border_radius=25)
+
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
-        pygame.draw.rect(screen, ac, (x, y, w, h))
+        pygame.draw.rect(screen, (0, 0, 0, alpha), rect, border_radius=25)
+        pygame.draw.rect(screen, ac, rect.inflate(-4, -4), border_radius=25)
         if click[0] == 1 and action != None:
             action()   
-    else:
-        pygame.draw.rect(screen, ic, (x, y, w, h))
 
-    smallText = pygame.font.Font(None, 20)
+    # Increase the text size
+    smallText = pygame.font.Font(None, 25)
     textSurf, textRect = text_objects(message, smallText)
     textRect.center = ((x + (w / 2)), (y + (h / 2)))
     screen.blit(textSurf, textRect)
@@ -174,19 +186,10 @@ pikachu_animation_offset_y = -20
 
 meowth_animation_offset_x = 100
 meowth_animation_offset_y = 100
-pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
-meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", meowth_attack_sound, scratch_imgs, meowth_animation_offset_x, meowth_animation_offset_y)
 
-from understand_command import read_command
 
-# cm = read_command("command.txt")
-
-# if (cm["skill"] == "thunder"):
-#     pikachu.attack_name = "Thunderbolt"
-#     pikachu.attack_power = cm["amount"]*40/10000
-#     print(pikachu.attack_power)
-    
-
+# pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
+# meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", meowth_attack_sound, scratch_imgs, meowth_animation_offset_x, meowth_animation_offset_y)
 
 # Desired position for Pikachu
 desired_x_pika = 115
@@ -246,6 +249,8 @@ def check_winner():
         if (pikachu.defeated and current_time - pikachu.attacked_time >= 3000) or (meowth.defeated and current_time - meowth.attacked_time >= 3000):
             if not ((pikachu.defeated and current_time - pikachu.attacked_time >= 5000) or (meowth.defeated and current_time - meowth.attacked_time >= 5000)):
                 screen.blit(ko_img, (200, 200))
+                
+        current_time = pygame.time.get_ticks()  # This returns the time in milliseconds
 
         if (pikachu.defeated and current_time - pikachu.attacked_time >= 6000) or (meowth.defeated and current_time - meowth.attacked_time >= 6000):
             pikachu.winner_banner_displayed = True  # Add this line
@@ -276,96 +281,7 @@ def check_winner():
 
 
 
-
-
 # Main game loop
-# animation_playing = False
-
-
-
-meowth_attack_delay = 6000  # 6 seconds in milliseconds
-# last_pikachu_attack = 0
-
-# while True:
-#     for event in pygame.event.get():
-#         if event.type == QUIT:
-#             pygame.quit()
-#             sys.exit()
-
-#         if event.type == KEYDOWN:
-#             if event.key == K_SPACE and not animation_playing and player_turn:
-#                 cm = read_command("command.txt") ## read the amount to modify power
-#             # try catch
-#                 try:
-#                     if (cm["skill"] == "thunder"):
-#                         pikachu.attack_name = "Thunderbolt"
-#                         pikachu.attack_power = cm["amount"]*40/10000
-#                         print(pikachu.attack_power)
-#                 except:
-#                     pikachu.attack_power = 40
-#                 if(pikachu.attack_power <40): # change the animation depend on the attack power
-#                     pikachu.animation_imgs = thunder_weak_imgs
-#                 if(pikachu.attack_power>400):
-#                     pikachu.animation_imgs = thunder_super
-#                     superthundersound.play()
-#                     superthundersound.play()
-
-#                 else:
-#                     pikachu.animation_imgs = thunder_imgs
-#                 pikachu.attack(meowth)
-#                 pikachu.attack_power = 40 # return to normal attack power
-                
-#                 # meowth.attacked_time = pygame.time.get_ticks()
-#                 # last_pikachu_attack = pygame.time.get_ticks()
-#                 # animation_playing = True
-#                 # player_turn = not player_turn
-#                 # if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack >= meowth_attack_delay:
-#                 #     meowth.attack(pikachu)
-#                 #     pikachu.attacked_time = pygame.time.get_ticks()
-#                 player_turn = not player_turn
-#                 animation_playing = True
-
-#             elif event.key == K_p:
-#                 play_pikachu_sound()
-
-#     current_time = pygame.time.get_ticks()
-#     if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack >= meowth_attack_delay:
-#         time.sleep(1)  
-#         meowth.attack(pikachu)
-#         pikachu.attacked_time = pygame.time.get_ticks()
-#         animation_playing = True
-#         player_turn = not player_turn
-
-#     current_time = pygame.time.get_ticks()
-
-#     meowth.visible = not meowth.defeated and not (current_time - meowth.attacked_time < 3000 and current_time % 200 < 100)
-#     pikachu.visible = not pikachu.defeated and not (current_time - pikachu.attacked_time < 1000 and current_time % 200 < 100)
-
-#     screen.blit(bg_img, (0, 0))
-
-#     if pikachu.visible:
-#         if not pikachu.winner_banner_displayed:
-#             screen.blit(pikachu.image, (desired_x_pika, desired_y_pika))
-
-#     if meowth.visible:
-#         screen.blit(meowth.image, (desired_x_meo, desired_y_meo))
-#     elif meowth.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
-#         screen.blit(meowthko_img, (desired_x_meo, desired_y_meo))
-
-#     if animation_playing:
-#         if player_turn:
-#             animation_playing = not meowth.play_animation(screen, desired_x_pika, desired_y_pika, 1000)
-#         else:
-#             animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 3000)
-
-#     draw_health_bars()
-#     check_winner()
-
-#     pygame.display.update()
-#     clock.tick(FPS)
-
-
-
 
 def game_loop():
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack
@@ -376,6 +292,8 @@ def game_loop():
     animation_playing = False
     last_pikachu_attack = 0
     battle_music.play(-1)
+    meowth_attack_delay = 6000  # 6 seconds in milliseconds
+
 
     while True:
         for event in pygame.event.get():
@@ -414,13 +332,6 @@ def game_loop():
                     pikachu.attack(meowth)
                     pikachu.attack_power = 40 # return to normal attack power
                     
-                    # meowth.attacked_time = pygame.time.get_ticks()
-                    # last_pikachu_attack = pygame.time.get_ticks()
-                    # animation_playing = True
-                    # player_turn = not player_turn
-                    # if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack >= meowth_attack_delay:
-                    #     meowth.attack(pikachu)
-                    #     pikachu.attacked_time = pygame.time.get_ticks()
                     player_turn = not player_turn
                     animation_playing = True
 
