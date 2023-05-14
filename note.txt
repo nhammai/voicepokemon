@@ -1,0 +1,25 @@
+thunder_imgs = load_animation_images("animation/thunder")
+electricball = load_animation_images("animation/electricball")
+irontail = load_animation_images("animation/irontail")
+bite = load_animation_images("animation/bite")
+bomb = load_animation_images("animation/bomb")
+scratch_imgs = load_animation_images("animation/scratch")
+
+
+
+
+thunder_weak_imgs = load_animation_images("animation/thunder_weak")
+thunder_super = load_animation_images("animation/thunder_tim")
+
+
+
+# meo_options = ["scratch", "bite", "bomb"]
+
+meoauto(meo_option):
+    return randomchoice
+
+
+choice = meo_auto(meo_option)
+
+
+

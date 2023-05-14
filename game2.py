@@ -46,9 +46,6 @@ pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
 battle_music = pygame.mixer.Sound("./sounds/battle_music.mp3")
 battle_music.set_volume(0.2)  # Add this line to adjust the volume
 
-pikachu_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
-meowth_attack_sound = pygame.mixer.Sound("./sounds/meowth_attack.wav")
-
 ko_sound = pygame.mixer.Sound("./sounds/KObig.wav")
 ko_sound.set_volume(1.0)  # Adjust the volume; 1.0 is the maximum volume
 
@@ -58,10 +55,21 @@ victory_full_sound.set_volume(0.9)
 
 pikachu_sound = pygame.mixer.Sound("./sounds/pikapika.wav")
 
+# play pikachu sound
 def play_pikachu_sound():
     pygame.mixer.Sound.play(pikachu_sound)
 
 superthundersound = pygame.mixer.Sound("./sounds/pikachu_attack.wav")
+
+# attack sound
+## pikachu attack sound
+pikachu_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
+
+## meo attack sound
+scratch_attack_sound = pygame.mixer.Sound("./sounds/scratch.wav")
+bite_attack_sound = pygame.mixer.Sound("./sounds/bite.wav")
+bomb_attack_sound = pygame.mixer.Sound("./sounds/bomb.wav")
+
 
 
 # Animation
@@ -74,22 +82,42 @@ def load_animation_images(folder_path):
             animation_imgs.append(img)
     return animation_imgs
 
+# Load animation file
 thunder_imgs = load_animation_images("animation/thunder")
-thunder_weak_imgs = load_animation_images("animation/thunder_weak")
 electricball = load_animation_images("animation/electricball")
 irontail = load_animation_images("animation/irontail")
-bite = load_animation_images("animation/bite")
-bomb = load_animation_images("animation/bomb")
-
-
-
-
-
+bite_imgs = load_animation_images("animation/bite")
+bomb_imgs = load_animation_images("animation/bomb")
+scratch_imgs = load_animation_images("animation/scratch")
+thunder_weak_imgs = load_animation_images("animation/thunder_weak")
 thunder_super = load_animation_images("animation/thunder_tim")
 
-scratch_imgs = load_animation_images("animation/scratch")
+
+# animation offset (location of the animate)
 
 
+## location for animation meowth attack
+scratch_animation_offset_x = 100
+scratch_animation_offset_y = 100
+
+bite_animation_offset_x = 100
+bite_animation_offset_y = 100
+
+bomb_animation_offset_x = 100
+bomb_animation_offset_y = 100
+
+
+
+
+# Create meo option the make it auto attack
+meo_options = ["scratch", "scratch", "scratch", "bite", "bite", "bomb"]
+def meo_auto(options):
+    return random.choice(options)
+
+# choice = meo_auto(meo_options)
+# if choice == "scratch":
+# elif choice == "bite":
+# elif choice == "bomb":
 
 # add play again button
 
@@ -134,7 +162,7 @@ def reset_game():
     
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack
     pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
-    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", meowth_attack_sound, scratch_imgs, meowth_animation_offset_x, meowth_animation_offset_y)
+    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
     last_pikachu_attack = 0
@@ -192,12 +220,12 @@ class Pokemon:
 pikachu_animation_offset_x = 50
 pikachu_animation_offset_y = -20
 
-meowth_animation_offset_x = 100
-meowth_animation_offset_y = 100
+scratch_animation_offset_x = 100
+scratch_animation_offset_y = 100
 
 
 # pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
-# meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", meowth_attack_sound, scratch_imgs, meowth_animation_offset_x, meowth_animation_offset_y)
+# meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
 
 # Desired position for Pikachu
 desired_x_pika = 115
@@ -295,7 +323,7 @@ def game_loop():
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack
 
     pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
-    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", meowth_attack_sound, scratch_imgs, meowth_animation_offset_x, meowth_animation_offset_y)
+    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
     last_pikachu_attack = 0
@@ -312,7 +340,7 @@ def game_loop():
             if event.type == KEYDOWN:
                 if event.key == K_a:  # Reset the game when 'A' is pressed
                     pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
-                    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", meowth_attack_sound, scratch_imgs, meowth_animation_offset_x, meowth_animation_offset_y)
+                    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
                     player_turn = True
                     animation_playing = False
                     last_pikachu_attack = 0
@@ -330,8 +358,6 @@ def game_loop():
                         pikachu.attack_power = 40
                     if(pikachu.attack_power <40): # change the animation depend on the attack power
                         pikachu.animation_imgs = thunder_weak_imgs
-
-                        
                     if(pikachu.attack_power>400):
                         pikachu.animation_imgs = thunder_super
                         superthundersound.play()
@@ -350,7 +376,32 @@ def game_loop():
 
         current_time = pygame.time.get_ticks()
         if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack >= meowth_attack_delay:
-            time.sleep(1)  
+            
+            choice = meo_auto(meo_options)
+            if choice == "scratch":
+                meowth.attack_power = 5
+                meowth.attack_name = "Scratch"
+                meowth.attack_sound = scratch_attack_sound
+                meowth.animation_imgs = scratch_imgs
+                meowth.animation_x_offset = scratch_animation_offset_x
+                meowth.animation_y_offset = scratch_animation_offset_y
+            elif choice == "bite":
+                meowth.attack_power = 10
+                meowth.attack_name = "Bite"
+                meowth.attack_sound = bite_attack_sound
+                meowth.animation_imgs = bite_imgs
+                meowth.animation_x_offset = bite_animation_offset_x
+                meowth.animation_y_offset = bite_animation_offset_y
+            elif choice == "bomb":
+                meowth.attack_power = 30
+                meowth.attack_name = "Bomb"
+                meowth.attack_sound = bomb_attack_sound
+                meowth.animation_imgs = bomb_imgs
+                meowth.animation_x_offset = bomb_animation_offset_x
+                meowth.animation_y_offset = bomb_animation_offset_y
+            
+
+
             meowth.attack(pikachu)
             pikachu.attacked_time = pygame.time.get_ticks()
             animation_playing = True
