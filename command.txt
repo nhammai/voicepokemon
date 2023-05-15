@@ -1,4 +1,4 @@
 
-Command: thunder
+Command: electricball
 
-Amount: 1000
+Amount: 0 

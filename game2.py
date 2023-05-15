@@ -69,8 +69,8 @@ superthundersound = pygame.mixer.Sound("./sounds/pikachu_attack.wav")
 # attack sound
 ## pikachu attack sound
 pikachu_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
-electricball_attack_sound = pygame.mixer.Sound("./sounds/electricball.wav")
-irontail_attack_sound = pygame.mixer.Sound("./sounds/irontail.wav")
+electricball_attack_sound = pygame.mixer.Sound("./sounds/explosion.wav")
+irontail_attack_sound = pygame.mixer.Sound("./sounds/scratch.wav")
 
 ## meo attack sound
 scratch_attack_sound = pygame.mixer.Sound("./sounds/scratch.wav")
@@ -91,8 +91,8 @@ def load_animation_images(folder_path):
 
 # Load animation file
 thunder_imgs = load_animation_images("animation/thunder")
-electricball = load_animation_images("animation/electricball")
-irontail = load_animation_images("animation/irontail")
+electricball_imgs = load_animation_images("animation/electricball4")
+irontail_imgs = load_animation_images("animation/irontail")
 bite_imgs = load_animation_images("animation/bite")
 bomb_imgs = load_animation_images("animation/bomb")
 scratch_imgs = load_animation_images("animation/scratch")
@@ -101,7 +101,12 @@ thunder_super = load_animation_images("animation/thunder_tim")
 
 
 # animation offset (location of the animate)
-
+thunder_animation_offset_x = 50
+thunder_animation_offset_y = -20
+electricball_animation_offset_x =70
+electricball_animation_offset_y = 50
+irontail_animation_offset_x = 70
+irontail_animation_offset_y = 70
 
 ## location for animation meowth attack
 scratch_animation_offset_x = 100
@@ -379,20 +384,59 @@ def game_loop():
 
                 if event.key == K_SPACE and not animation_playing and player_turn:
                     cm = read_command("command.txt") ## read the amount to modify power
+                    print(cm)
                 # try catch
-                    try:
-                        if (cm["skill"] == "thunder"):
+                    # try:
+                    #     if (cm["skill"] == "thunder"):
+                    #         pikachu.attack_name = "Thunderbolt"
+                    #         pikachu.attack_power = cm["amount"]*40/10000
+                    #         print(pikachu.attack_power)
+                    #         if(pikachu.attack_power <40): # change the animation depend on the attack power
+                    #             pikachu.animation_imgs = thunder_weak_imgs
+                    #         if(pikachu.attack_power>400):
+                    #             pikachu.animation_imgs = thunder_super
+                    #             superthundersound.play()
+                    #             superthundersound.play()
+                    #     elif (cm["skill"] == "electricball"):
+                    #         pikachu.attack_power = 30
+                    #         pikachu.attack_name = "Electricball"
+                    #         pikachu.attack_sound = electricball_attack_sound
+                    #         pikachu.animation_imgs = electricball_imgs
+                    #     elif (cm["skill"] == "irontail"):
+                    #         pikachu.attack_power = 20
+                    #         pikachu.attack_name = "Irontail"
+                    #         pikachu.attack_sound = irontail_attack_sound
+                    #         pikachu.animation_imgs = irontail_imgs
+
+                            
+
+                    # except:
+                    #     pikachu.attack_name = "Thunderbolt"
+                    #     pikachu.attack_power = 5
+                    if (cm["skill"] == "thunder"):
                             pikachu.attack_name = "Thunderbolt"
                             pikachu.attack_power = cm["amount"]*40/10000
                             print(pikachu.attack_power)
-                    except:
-                        pikachu.attack_power = 40
-                    if(pikachu.attack_power <40): # change the animation depend on the attack power
-                        pikachu.animation_imgs = thunder_weak_imgs
-                    if(pikachu.attack_power>400):
-                        pikachu.animation_imgs = thunder_super
-                        superthundersound.play()
-                        superthundersound.play()
+                            if(pikachu.attack_power <40): # change the animation depend on the attack power
+                                pikachu.animation_imgs = thunder_weak_imgs
+                            if(pikachu.attack_power>400):
+                                pikachu.animation_imgs = thunder_super
+                                superthundersound.play()
+                                superthundersound.play()
+                    elif (cm["skill"] == "electricball"):
+                        pikachu.attack_power = 30
+                        pikachu.attack_name = "Electricball"
+                        pikachu.attack_sound = electricball_attack_sound
+                        pikachu.animation_imgs = electricball_imgs
+                        pikachu.animation_x_offset = electricball_animation_offset_x
+                        pikachu.animation_y_offset = electricball_animation_offset_y
+                    elif (cm["skill"] == "irontail"):
+                        pikachu.attack_power = 20
+                        pikachu.attack_name = "Irontail"
+                        pikachu.attack_sound = irontail_attack_sound
+                        pikachu.animation_imgs = irontail_imgs
+                        pikachu.animation_x_offset = irontail_animation_offset_x
+                        pikachu.animation_y_offset = irontail_animation_offset_y
 
                     else:
                         pikachu.animation_imgs = thunder_imgs
@@ -439,8 +483,13 @@ def game_loop():
             player_turn = not player_turn
 
         current_time = pygame.time.get_ticks()
+        if (pikachu.attack_name == "Thunderbolt"):
+            meowth.visible = not meowth.defeated and not (current_time - meowth.attacked_time < 3000 and current_time % 200 < 100)
+        elif (pikachu.attack_name == "Electricball"):
+            meowth.visible = not meowth.defeated and not (current_time - meowth.attacked_time < 2000 and current_time % 200 < 100)
+        elif (pikachu.attack_name == "Irontail"):
+            meowth.visible = not meowth.defeated and not (current_time - meowth.attacked_time < 1000 and current_time % 200 < 100)
 
-        meowth.visible = not meowth.defeated and not (current_time - meowth.attacked_time < 3000 and current_time % 200 < 100)
         pikachu.visible = not pikachu.defeated and not (current_time - pikachu.attacked_time < 1000 and current_time % 200 < 100)
 
         screen.blit(bg_img, (0, 0))
@@ -459,7 +508,12 @@ def game_loop():
             if player_turn:
                 animation_playing = not meowth.play_animation(screen, desired_x_pika, desired_y_pika, 1000)
             else:
-                animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 3000)
+                if (pikachu.attack_name == "Thunderbolt"):
+                    animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 3000)
+                elif (pikachu.attack_name == "Electricball"):
+                    animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 2000)
+                elif (pikachu.attack_name == "Irontail"):
+                    animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 1000)
 
         draw_health_bars()
         check_winner()
