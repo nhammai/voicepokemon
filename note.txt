@@ -22,4 +22,10 @@ meoauto(meo_option):
 choice = meo_auto(meo_option)
 
 
+count scale to pikachu png image
+
+250*376/664 = 141.56626506
+
+=> 250, 141
+
 

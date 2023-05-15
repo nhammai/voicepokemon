@@ -40,8 +40,8 @@ ko_img = pygame.transform.scale(ko_img, (250, 125))  # Adjust the size as needed
 pikachu_front_img = pygame.image.load("pikachu_front_img.png")
 pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
 
-pikachuko_img = pygame.image.load("pikachuko_image.png")
-pikachuko_img = pygame.transform.scale(pikachuko_img, (200, 200))
+pikachuko_img = pygame.image.load("pikachuuuuuu.png")
+pikachuko_img = pygame.transform.scale(pikachuko_img, (250, 141))
 
 meowth_win_img = pygame.image.load("meowth_win.png")
 meowth_win_img = pygame.transform.scale(meowth_win_img, (250, 250))
@@ -236,6 +236,10 @@ scratch_animation_offset_y = 100
 desired_x_pika = 115
 desired_y_pika = 395
 
+# Desired position for Pikachu KO
+desired_x_pikako = 115 - 20
+desired_y_pikako = 395 + 70
+
 # Desired position for Meowth
 desired_x_meo = 450
 desired_y_meo = 150
@@ -426,7 +430,7 @@ def game_loop():
             if not pikachu.winner_banner_displayed:
                 screen.blit(pikachu.image, (desired_x_pika, desired_y_pika))
         elif pikachu.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
-            screen.blit(pikachuko_img, (desired_x_pika, desired_y_pika))
+            screen.blit(pikachuko_img, (desired_x_pikako, desired_y_pikako))
         if meowth.visible:
             screen.blit(meowth.image, (desired_x_meo, desired_y_meo))
         elif meowth.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
