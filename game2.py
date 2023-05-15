@@ -43,7 +43,8 @@ pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
 pikachuko_img = pygame.image.load("pikachuko_image.png")
 pikachuko_img = pygame.transform.scale(pikachuko_img, (200, 200))
 
-
+meowth_win_img = pygame.image.load("meowth_win.png")
+meowth_win_img = pygame.transform.scale(meowth_win_img, (250, 250))
 
 
 # Load sounds
@@ -301,7 +302,10 @@ def check_winner():
                 pikachu_winner_pos_y = desired_y_pika - 60  # Adjust this value to move Pikachu's image higher
                 screen.blit(pikachu.image, (pikachu_winner_pos_x, pikachu_winner_pos_y))
 
-            
+            elif meowth.hp > pikachu.hp:
+                meowth.image = meowth_win_img
+
+
             font = pygame.font.Font(None, 72)
             winner = "Pikachu" if pikachu.hp > meowth.hp else "Meowth"
             text = font.render(f"{winner} wins!", True, (255, 255, 255))
