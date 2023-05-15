@@ -40,6 +40,10 @@ ko_img = pygame.transform.scale(ko_img, (250, 125))  # Adjust the size as needed
 pikachu_front_img = pygame.image.load("pikachu_front_img.png")
 pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
 
+pikachuko_img = pygame.image.load("pikachuko_image.png")
+pikachuko_img = pygame.transform.scale(pikachuko_img, (200, 200))
+
+
 
 
 # Load sounds
@@ -293,15 +297,15 @@ def check_winner():
             meowth.winner_banner_displayed = True  # Add this line
             if pikachu.hp > meowth.hp:
                 pikachu.image = pikachu_front_img
+                pikachu_winner_pos_x = desired_x_pika -50
+                pikachu_winner_pos_y = desired_y_pika - 60  # Adjust this value to move Pikachu's image higher
+                screen.blit(pikachu.image, (pikachu_winner_pos_x, pikachu_winner_pos_y))
 
+            
             font = pygame.font.Font(None, 72)
             winner = "Pikachu" if pikachu.hp > meowth.hp else "Meowth"
             text = font.render(f"{winner} wins!", True, (255, 255, 255))
             text_rect = text.get_rect(center=(width // 2, int(height * 0.1)))
-
-            pikachu_winner_pos_x = desired_x_pika -50
-            pikachu_winner_pos_y = desired_y_pika - 60  # Adjust this value to move Pikachu's image higher
-            screen.blit(pikachu.image, (pikachu_winner_pos_x, pikachu_winner_pos_y))
 
             screen.blit(text, text_rect)
             draw_button(screen, "Play Again", 350, 450, 100, 50, (0, 200, 0), (0, 255, 0), reset_game)
@@ -379,21 +383,21 @@ def game_loop():
             
             choice = meo_auto(meo_options)
             if choice == "scratch":
-                meowth.attack_power = 5
+                meowth.attack_power = 10
                 meowth.attack_name = "Scratch"
                 meowth.attack_sound = scratch_attack_sound
                 meowth.animation_imgs = scratch_imgs
                 meowth.animation_x_offset = scratch_animation_offset_x
                 meowth.animation_y_offset = scratch_animation_offset_y
             elif choice == "bite":
-                meowth.attack_power = 10
+                meowth.attack_power = 100
                 meowth.attack_name = "Bite"
                 meowth.attack_sound = bite_attack_sound
                 meowth.animation_imgs = bite_imgs
                 meowth.animation_x_offset = bite_animation_offset_x
                 meowth.animation_y_offset = bite_animation_offset_y
             elif choice == "bomb":
-                meowth.attack_power = 30
+                meowth.attack_power = 100
                 meowth.attack_name = "Bomb"
                 meowth.attack_sound = bomb_attack_sound
                 meowth.animation_imgs = bomb_imgs
@@ -417,7 +421,8 @@ def game_loop():
         if pikachu.visible:
             if not pikachu.winner_banner_displayed:
                 screen.blit(pikachu.image, (desired_x_pika, desired_y_pika))
-
+        elif pikachu.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
+            screen.blit(pikachuko_img, (desired_x_pika, desired_y_pika))
         if meowth.visible:
             screen.blit(meowth.image, (desired_x_meo, desired_y_meo))
         elif meowth.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
