@@ -69,6 +69,8 @@ superthundersound = pygame.mixer.Sound("./sounds/pikachu_attack.wav")
 # attack sound
 ## pikachu attack sound
 pikachu_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
+electricball_attack_sound = pygame.mixer.Sound("./sounds/electricball.wav")
+irontail_attack_sound = pygame.mixer.Sound("./sounds/irontail.wav")
 
 ## meo attack sound
 scratch_attack_sound = pygame.mixer.Sound("./sounds/scratch.wav")
@@ -310,12 +312,29 @@ def check_winner():
                 meowth.image = meowth_win_img
 
 
-            font = pygame.font.Font(None, 72)
+            # font = pygame.font.Font(None, 72)
+            # winner = "Pikachu" if pikachu.hp > meowth.hp else "Meowth"
+            # text = font.render(f"{winner} wins!", True, (255, 255, 255))
+            # text_rect = text.get_rect(center=(width // 2, int(height * 0.1)))
+
+            # screen.blit(text, text_rect)
+            # draw_button(screen, "Play Again", 350, 450, 100, 50, (0, 200, 0), (0, 255, 0), reset_game)
             winner = "Pikachu" if pikachu.hp > meowth.hp else "Meowth"
-            text = font.render(f"{winner} wins!", True, (255, 255, 255))
+
+            # Create the text and the shadow text
+            font = pygame.font.Font(None, 72)  # Increase the size for more epic look
+            text = font.render(f"{winner} wins!", True, (255, 215, 0))  # Gold color
+            shadow_text = font.render(f"{winner} wins!", True, (0, 0, 0))  # Black color for shadow
+
             text_rect = text.get_rect(center=(width // 2, int(height * 0.1)))
 
+            # Calculate the position for the shadow text
+            shadow_pos = (text_rect.x + 3, text_rect.y + 3)
+
+            # Draw the shadow text and the actual text
+            screen.blit(shadow_text, shadow_pos)
             screen.blit(text, text_rect)
+
             draw_button(screen, "Play Again", 350, 450, 100, 50, (0, 200, 0), (0, 255, 0), reset_game)
 
 
