@@ -1,4 +1,4 @@
 
 Command: thunder
 
-Amount: 100
+Amount: 10000
