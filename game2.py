@@ -68,7 +68,7 @@ superthundersound = pygame.mixer.Sound("./sounds/pikachu_attack.wav")
 
 # attack sound
 ## pikachu attack sound
-pikachu_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
+thunder_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
 electricball_attack_sound = pygame.mixer.Sound("./sounds/superelectricballshort.wav")
 irontail_attack_sound = pygame.mixer.Sound("./sounds/irontailsuper.wav")
 
@@ -173,7 +173,7 @@ def draw_button(screen, message, x, y, w, h, ic, ac, action=None):
 def reset_game():
     
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack
-    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
+    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
     meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
@@ -236,7 +236,7 @@ scratch_animation_offset_x = 100
 scratch_animation_offset_y = 100
 
 
-# pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
+# pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
 # meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
 
 # Desired position for Pikachu
@@ -354,17 +354,19 @@ def check_winner():
 
 
 # Main game loop
+last_pikachu_attack_time = 0
+timedelay = 0
 
 def game_loop():
-    global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack
+    global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack, last_pikachu_attack_time
 
-    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
+    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
     meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
     last_pikachu_attack = 0
     battle_music.play(-1)
-    meowth_attack_delay = 6000  # 6 seconds in milliseconds
+    # meowth_attack_delay = random.randint(3000, 6000)  # 3 or 6 seconds in milliseconds
 
 
     while True:
@@ -375,7 +377,7 @@ def game_loop():
 
             if event.type == KEYDOWN:
                 if event.key == K_a:  # Reset the game when 'A' is pressed
-                    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", pikachu_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
+                    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, pikachu_animation_offset_x, pikachu_animation_offset_y)
                     meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
                     player_turn = True
                     animation_playing = False
@@ -414,8 +416,10 @@ def game_loop():
                     #     pikachu.attack_name = "Thunderbolt"
                     #     pikachu.attack_power = 5
                     if (cm["skill"] == "thunder"):
+                            timedelay = random.randint(5000, 7000)
                             pikachu.attack_name = "Thunderbolt"
                             pikachu.attack_power = cm["amount"]*40/10000
+                            pikachu.attack_sound = thunder_attack_sound
                             print(pikachu.attack_power)
                             if(pikachu.attack_power <40): # change the animation depend on the attack power
                                 pikachu.animation_imgs = thunder_weak_imgs
@@ -424,6 +428,7 @@ def game_loop():
                                 superthundersound.play()
                                 superthundersound.play()
                     elif (cm["skill"] == "electricball"):
+                        timedelay = random.randint(3000, 6000)
                         pikachu.attack_power = 30
                         pikachu.attack_name = "Electricball"
                         pikachu.attack_sound = electricball_attack_sound
@@ -431,6 +436,7 @@ def game_loop():
                         pikachu.animation_x_offset = electricball_animation_offset_x
                         pikachu.animation_y_offset = electricball_animation_offset_y
                     elif (cm["skill"] == "irontail"):
+                        timedelay = random.randint(2000, 5000)
                         pikachu.attack_power = 20
                         pikachu.attack_name = "Irontail"
                         pikachu.attack_sound = irontail_attack_sound
@@ -445,30 +451,31 @@ def game_loop():
                     
                     player_turn = not player_turn
                     animation_playing = True
+                    last_pikachu_attack_time = pygame.time.get_ticks()
 
                 elif event.key == K_p:
                     play_pikachu_sound()
 
         current_time = pygame.time.get_ticks()
-        if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack >= meowth_attack_delay:
+        if not player_turn and not animation_playing and not meowth.defeated:
             
             choice = meo_auto(meo_options)
             if choice == "scratch":
-                meowth.attack_power = 10
+                meowth.attack_power = 2
                 meowth.attack_name = "Scratch"
                 meowth.attack_sound = scratch_attack_sound
                 meowth.animation_imgs = scratch_imgs
                 meowth.animation_x_offset = scratch_animation_offset_x
                 meowth.animation_y_offset = scratch_animation_offset_y
             elif choice == "bite":
-                meowth.attack_power = 100
+                meowth.attack_power = 5
                 meowth.attack_name = "Bite"
                 meowth.attack_sound = bite_attack_sound
                 meowth.animation_imgs = bite_imgs
                 meowth.animation_x_offset = bite_animation_offset_x
                 meowth.animation_y_offset = bite_animation_offset_y
             elif choice == "bomb":
-                meowth.attack_power = 100
+                meowth.attack_power = 10
                 meowth.attack_name = "Bomb"
                 meowth.attack_sound = bomb_attack_sound
                 meowth.animation_imgs = bomb_imgs
@@ -477,10 +484,16 @@ def game_loop():
             
 
 
-            meowth.attack(pikachu)
-            pikachu.attacked_time = pygame.time.get_ticks()
-            animation_playing = True
-            player_turn = not player_turn
+            # meowth.attack(pikachu)
+            # pikachu.attacked_time = pygame.time.get_ticks()
+            # animation_playing = True
+            # player_turn = not player_turn
+            if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack_time >= timedelay:
+                # Meowth's attack code here
+                meowth.attack(pikachu)
+                pikachu.attacked_time = pygame.time.get_ticks()
+                animation_playing = True
+                player_turn = not player_turn
 
         current_time = pygame.time.get_ticks()
         if (pikachu.attack_name == "Thunderbolt"):
