@@ -49,7 +49,7 @@ meowth_win_img = pygame.transform.scale(meowth_win_img, (250, 250))
 
 # Load sounds
 battle_music = pygame.mixer.Sound("./sounds/battle_music.mp3")
-battle_music.set_volume(0.2)  # Add this line to adjust the volume
+battle_music.set_volume(0.4)  # Add this line to adjust the volume
 
 ko_sound = pygame.mixer.Sound("./sounds/KObig.wav")
 ko_sound.set_volume(1.0)  # Adjust the volume; 1.0 is the maximum volume
@@ -69,8 +69,8 @@ superthundersound = pygame.mixer.Sound("./sounds/pikachu_attack.wav")
 # attack sound
 ## pikachu attack sound
 pikachu_attack_sound = pygame.mixer.Sound("./sounds/thunderpika.wav")
-electricball_attack_sound = pygame.mixer.Sound("./sounds/explosion.wav")
-irontail_attack_sound = pygame.mixer.Sound("./sounds/scratch.wav")
+electricball_attack_sound = pygame.mixer.Sound("./sounds/superelectricballshort.wav")
+irontail_attack_sound = pygame.mixer.Sound("./sounds/irontailsuper.wav")
 
 ## meo attack sound
 scratch_attack_sound = pygame.mixer.Sound("./sounds/scratch.wav")
