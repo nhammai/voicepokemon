@@ -16,6 +16,7 @@ llm = OpenAI(temperature=0.9)
 prompt = PromptTemplate(
     input_variables=["sentence"],
     template=(
+        "Act as if you're an super NLP api"
         "I'm about creating a pokemon game so with voice command and I want it to understand my sentence.\n\n"
         "I want to analyse the sentence\n\n"
         "If it is similar to \"Phóng điện x V\" with Phóng điện as the skill the Pokémon uses and x as the amount of V to attack.\n\n"
@@ -73,19 +74,59 @@ prompt = PromptTemplate(
         "\"đuôi kim loại\" then you print\n\n"
         "Command: irontail\n\n"
         "Amount: 0\n\n"
+        "Remember there is only the format"
+        "Command: nameoftheability"
+        "Amount: amountoftheability"
+        "There's no other text beside this format"
+        "If you can not recognize then we have the default:"
+        "Command: thunder\n\n"
+        "Amount: 1000\n\n"
+        "Also if you find I say something super silly and not relevant to the ability or command then just set up the default:"
+        "Command: thunder\n\n"
+        "Amount: 1000\n\n"
+        "You will never leave the command and amount empty or silly operator like this:"
+        "Command: -"
+        "Amount: -"
+        "At least if you don't know what to do you have to setup to the default value like this:"
+        "Command: thunder\n\n"
+        "Amount: 1000\n\n"
+        "Never say things like this:"
+        "In this case, we set up the default:Command: thunder"
+
+        "Amount: 1000"
+        "Because you will break my code"
+        "Just shut up. Say nothing but:"
+        "Command: nameoftheability"
+        "Amount: amountoftheability"
+        "And remember you don't say anything to me beside:"
+        "Command: nameoftheability"
+        "Amount: amountoftheability"
+        "And remember you don't understand then we have the default:"
+        "Command: thunder\n\n"
+        "Amount: 1000\n\n"
+        "You're an API you're not a chatbot so you don't say:"
+        "Since this sentence does not match the format for command and amount, you will set up to the default:"
+        "Command: thunder"
+
+        "Amount: 1000"
+        "You only say: "
+        "Command: thunder"
+
+        "Amount: 1000"
 
         "Analyse it to the command and amount\n\n"
-        "Now the sentence is: {sentence}\n\n"
+        "The sentence is: {sentence}\n\n"
     ),
 )
 
 chain = LLMChain(llm=llm, prompt=prompt)
 
 def speech2command():
-    sentence = speech2text() # get the text from voice input
+    sentence = speech2text()  # get the text from voice input
     result = chain.run(sentence)
 
-    with open("command.txt", "w", encoding="utf-8") as f:  # Use 'w' mode to overwrite the file
+    with open("command.txt", "w+", encoding="utf-8") as f:  # Use 'w+' mode to open the file for both writing and reading
+        f.truncate(0)  # This will make sure the file is completely empty
         f.write(result)
 
 

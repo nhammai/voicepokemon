@@ -78,6 +78,9 @@ def speech2text():
     with sr.AudioFile('output.wav') as source:
         audio = recognizer.record(source)
 
+    # Initialize the result variable
+    result = "Transcription failed"
+
     # Transcribe the audio using Google Web Speech API
     try:
         result = recognizer.recognize_google(audio, language='vi-VN')

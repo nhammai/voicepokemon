@@ -1,4 +1,3 @@
+Command: irontail 
 
-Command: thunder
-
-Amount: 1000
+Amount: 0
