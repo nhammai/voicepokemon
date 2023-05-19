@@ -2,8 +2,14 @@ import os
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from speech2text import speech2text
+import pvporcupine
+import pyaudio
+import struct
+import keyboard
 import json
 import re
+
 
 # Do text to command with open ai api
 os.environ["OPENAI_API_KEY"] = ""
@@ -21,103 +27,103 @@ template = """
 
     example: "Phóng điện 10000 vôn" then we have 
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "10000"
 
     "điện 100000 V" then we have
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "100000"
 
     example: "Phóng điện 12000 vôn" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "12000"
     example: "Phóng điện 20 vôn" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "20"
 
     example: "Phóng điện một nghìn hai trăm lẻ một vôn" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "1201"
 
     example: "Phóng điện một triệu vôn" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "1000000"
 
     example: "Phóng điện một 1000000 vôn" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "1000000"
 
     example: "Phóng điện một 2000000 vôn" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "2000000"
     
 
     example: "Phóng điện một nghìn hai trăm lẻ một vôn" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "1201"
 
     example: "pikachu phóng điện" then we have:
 
-    "Command": "thunder",
+    "command": "thunder",
     "amount": "1000"
 
     The amount default if I don't say is 1000 
 
     If it is similar to Quả cầu điện or Quả bóng điện.Remember we must have the  curly bracket because we using json format. I don't write it here but you must write it:
     Example "Pikachu quả bóng điện" then we have
-    "Command": "electricball"
-    "Amount": "1000"
+    "command": "electricball"
+    "amount": "1000"
     Example: "Quả cầu điện" then we have:
-    "Command": "electricball"
-    "Amount": "1000"
+    "command": "electricball"
+    "amount": "1000"
     Example: "Pikachu quả cầu điện" then we have:
-    "Command": "electricball"
-    "Amount": "1000"
+    "command": "electricball"
+    "amount": "1000"
     Example: "Quả banh điện" then we have
-    "Command": "electricball"
-    "Amount": "1000"
+    "command": "electricball"
+    "amount": "1000"
     Example: "banh điện" then we have:
-    "Command": "electricball"
-    "Amount": "1000"
+    "command": "electricball"
+    "amount": "1000"
 
     If it is similar to "Đuôi sắt" or "Đuôi thép". Remember we must have the  curly bracket because we using json format. I don't write it here but you must write it:
     Example: "Pikachu đuôi sắt" then we have
-    "Command": "irontail"
-    "Amount": "1000"
+    "command": "irontail"
+    "amount": "1000"
     Example: "đuôi sắt" then we have:
-    "Command": "irontail"
-    "Amount": "1000"
+    "command": "irontail"
+    "amount": "1000"
     Example: "Pikachu đuôi sắt" then we have:
-    "Command": "irontail"
-    "Amount": "1000"
+    "command": "irontail"
+    "amount": "1000"
     Example: "Đuôi thép" then we have:
-    "Command": "irontail"
-    "Amount": "1000"
+    "command": "irontail"
+    "amount": "1000"
     "đuôi kim loại" then we have:
-    "Command": "irontail"
-    "Amount": "1000"
+    "command": "irontail"
+    "amount": "1000"
 
 
     Remember we must have the json format and the bracket:
 
-    "Command": "nameoftheability"
-    "Amount": "amountoftheability"
+    "command": "nameoftheability"
+    "amount": "amountoftheability"
 
     There's no other text beside this json format with the bracket operator. Never miss the curly bracket operator
     If you can not recognize then we have the default:
-    "Command": "thunder"
-    "Amount": "1000"
+    "command": "thunder"
+    "amount": "1000"
     Also if you find I say something super silly and not relevant to the ability or command then just set up the default:
-    "Command": "thunder"
-    "Amount": "1000"
+    "command": "thunder"
+    "amount": "1000"
 
     Translate it to the command and amount.
     Remember we must have the  curly bracket because we using json format. And don't say any text just say in json format because you're an API.
@@ -175,18 +181,72 @@ chain = LLMChain(llm=llm, prompt=prompt)
 
 
 
-def main():
-   sentence = "pikachu quả bóng điện 20000 vôn"
-   result = chain.run(sentence)
-   print(result)
 
-    # Clean the result
-   result = clean_response(result)
+chain = LLMChain(llm=llm, prompt=prompt)
 
-   print(result)
-   with open("command.json", "w+", encoding="utf-8") as f:  # Use 'w+' mode to open the file for both writing and reading
+def speech2command():
+    sentence = speech2text()  # get the text from voice input
+    result = chain.run(sentence)
+    result = clean_response(result)
+    with open("command.json", "w+", encoding="utf-8") as f:  # Use 'w+' mode to open the file for both writing and reading
         f.truncate(0)  # This will make sure the file is completely empty
         f.write(result)
+
+
+
+# do wake word to activate 
+KEYWORD_PATH = "pika-chu_en_windows_v2_2_0.ppn"
+ACCESS_KEY = "pOXDnIw9kRswMpL270PgGOWHxugjHgPau48xLQtUdFNkYcFKEkT0Pg=="
+
+def main():
+    porcupine = None
+    pa = None
+    audio_stream = None
+
+    try:
+        porcupine = pvporcupine.create(
+            access_key=ACCESS_KEY,
+            keyword_paths=[KEYWORD_PATH],
+            sensitivities=[0.5]
+        )
+
+        pa = pyaudio.PyAudio()
+        audio_stream = pa.open(
+            rate=porcupine.sample_rate,
+            channels=1,
+            format=pyaudio.paInt16,
+            input=True,
+            frames_per_buffer=porcupine.frame_length
+        )
+
+        print("Listening for 'Pika chu'...")
+
+        while True:
+            pcm = audio_stream.read(porcupine.frame_length)
+            pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
+            keyword_index = porcupine.process(pcm)
+
+            if keyword_index >= 0:
+                print("Pika Pika")
+                keyboard.press('p')
+                keyboard.release('p')
+                # pyautogui.keyDown('space')  # Press the 'P' key
+                speech2command()
+                keyboard.press('space')
+                keyboard.release('space')
+                os.remove("output.wav")
+
+    except KeyboardInterrupt:
+        print("Stopping...")
+    finally:
+        if porcupine is not None:
+            porcupine.delete()
+
+        if audio_stream is not None:
+            audio_stream.close()
+
+        if pa is not None:
+            pa.terminate()
 
 if __name__ == "__main__":
     main()
