@@ -119,6 +119,17 @@ prompt = PromptTemplate(
     ),
 )
 
+# check_prompt = PromptTemplate(
+#     input_variables=["sentence"],
+#     template=(
+#         "Act as if you're an API. Your job will check the "
+#     ),
+# )
+
+
+
+
+
 chain = LLMChain(llm=llm, prompt=prompt)
 
 def speech2command():
