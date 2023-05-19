@@ -40,7 +40,7 @@ def speech2text():
     p = pyaudio.PyAudio()  # Create an interface to PortAudio
 
     print('Recording')
-    playSound("sounds/listening.mp3")
+    # playSound("sounds/listening.mp3")
 
     stream = p.open(format=sample_format,
                     channels=channels,
