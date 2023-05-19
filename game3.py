@@ -4,8 +4,6 @@ import sys
 import random
 import os
 import time
-from understand_command import read_command
-
 from understandjson import load_json_file
 
 
