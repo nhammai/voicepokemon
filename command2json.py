@@ -6,7 +6,7 @@ import json
 
 
 # Do text to command with open ai api
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 
 llm = OpenAI(temperature=0.9)
 template = """
