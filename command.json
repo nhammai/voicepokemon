@@ -1,4 +1,4 @@
 {
-    "Command": "Electric Discharge",
-    "amount": "30000"
+    "Command": "electricball",
+    "amount": "20000"
 }
