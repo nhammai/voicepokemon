@@ -58,7 +58,7 @@ ko_sound.set_volume(1.0)  # Adjust the volume; 1.0 is the maximum volume
 victory_full_sound = pygame.mixer.Sound("./sounds/victorfull.wav")
 victory_full_sound.set_volume(0.9)
 
-pikachu_sound = pygame.mixer.Sound("./sounds/pikapika.wav")
+pikachu_sound = pygame.mixer.Sound("./sounds/pikapika_big.wav")
 
 # play pikachu sound
 def play_pikachu_sound():

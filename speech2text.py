@@ -62,7 +62,7 @@ def speech2text():
     p.terminate()
 
 
-    playSound("sounds/done.mp3")
+    playSound("sounds/pikachuready.wav")
 
     print('Finished recording')
 
