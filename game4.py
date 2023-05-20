@@ -384,7 +384,7 @@ def intro_scene():
     katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/xinchaoshatoshi.wav')
 
     # Set volume
-    intro_sound.set_volume(0.2)
+    intro_sound.set_volume(0.3)
     katsumi_voice.set_volume(1.0)
 
     # Play sounds using separate channels
@@ -395,36 +395,34 @@ def intro_scene():
     channel2.play(katsumi_voice)
 
     # Text
-    intro_text = "Chào mừng Shatoshi đã trở lại với thế giới Pokemon. Mình là Kasumi, hướng dẫn viên  xinh đẹp và là bồ cũ của bạn. Hôm nay, chúng ta sẽ bắt đầu một hành trình mới, với đầy đủ những điều bất ngờ và thú vị. Bạn có cần mình giới thiệu một tí về cách thức chơi không nhỉ?"
+    intro_text = "Chào mừng Shatoshi đã trở lại với thế giới Pokemon. Mình là Kasumi, hướng dẫn viên xinh đẹp và là bồ cũ của bạn. Hôm nay, chúng ta sẽ bắt đầu một hành trình mới, với đầy đủ những điều bất ngờ và thú vị. Bạn có cần mình giới thiệu một tí về cách thức chơi không nhỉ?"
 
     font = pygame.font.Font('Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
-    # Split the text into words
-    words = intro_text.split(' ')
-    # Calculate the delay between words based on the total duration (14s)
-    delay_per_word = 14000 / len(words)
+    # Calculate the delay between characters based on the total duration (14s)
+    delay_per_char = 13000 / len(intro_text)
 
     # Time when the typing effect starts
     start_time = pygame.time.get_ticks()
 
-    # Index of the word to display
-    word_index = 0
+    # Index of the character to display
+    char_index = 0
 
     waiting = True
     while waiting:
         current_time = pygame.time.get_ticks()
-        if current_time - start_time >= delay_per_word:  # Time for the next word
-            word_index += 1
+        if current_time - start_time >= delay_per_char:  # Time for the next character
+            char_index += 1
             start_time = current_time
 
-        # Concatenate the words to display
-        text_to_render = ' '.join(words[:word_index])
+        # Concatenate the characters to display
+        text_to_render = intro_text[:char_index]
 
         # Split the text into lines that don't exceed the screen width minus margins
         wrapped_text = textwrap.wrap(text_to_render, width=(screen_width - 2 * margin) // 10)
 
         # Clear the screen
-        screen.fill((0,0, 0))
+        screen.fill((0, 0, 0))
         screen.blit(bg_image, (0, 0))  # draw the background image
 
         # Position katsumi_image at the center bottom of the screen
@@ -435,7 +433,7 @@ def intro_scene():
         # Display each line
         y = margin  # Starting height for the text
         for line in wrapped_text:
-            text_surface = font.render(line, True, (34, 34, 34)) # change teh color to yellow
+            text_surface = font.render(line, True, (34, 34, 34)) # Change the color to yellow
             screen.blit(text_surface, (margin, y))
             y += font.get_height() + 5  # Increase y by the height of the font for the next line
 
@@ -447,11 +445,11 @@ def intro_scene():
                 if event.key == pygame.K_RETURN:  # The key is the Enter key
                     waiting = False
 
-        # Stop when all words have been displayed
-        if word_index >= len(words):
+        # Stop when all characters have been displayed
+        if char_index >= len(intro_text):
             break
 
-    # After all words have been displayed, wait until the Enter key is pressed to exit
+    # After all characters have been displayed, wait until the Enter key is pressed to exit
     while waiting:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
@@ -461,8 +459,6 @@ def intro_scene():
         pygame.time.wait(50)  # Delay to prevent the CPU from running at full speed in the waiting loop
 
     channel1.stop()
-
-
 
 
 
