@@ -9,26 +9,6 @@ from understandjson import load_json_file
 pygame.init()
 
 
-# Add intro material
-
-# Audio
-intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
-katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/introgame.wav')
-
-# Images
-bg_image = pygame.image.load('intro_image/backgroundblank.png')
-katsumi_image = pygame.image.load('intro_image/katsumi.png')
-
-# Icon images
-icons = {
-    "meowth": pygame.image.load('intro_image/meowthshadow.png'),
-    "thunder": pygame.image.load('intro_image/pikathunder.png'),
-    "electricball": pygame.image.load('intro_image/pikaelectricball.jpg'),
-    "irontail": pygame.image.load('intro_image/pikairontail.jpg'),
-}
-
-
-
 
 
 
@@ -40,7 +20,7 @@ height = 600
 screen = pygame.display.set_mode((width, height))
 
 # Set the window title
-pygame.display.set_caption("Pokemon Battle: Pikachu vs Meowth")
+pygame.display.set_caption("Pokemon Battle: Pikachu and The Multiverse")
 
 # Load and scale images
 bg_img = pygame.image.load("bg_img.png")
@@ -384,9 +364,16 @@ pygame.mixer.init(frequency=44100, buffer=512)
 screen = pygame.display.set_mode((800, 600))
 
 def intro_scene():
+    # Size of the screen
+    screen_width, screen_height = screen.get_size()
+
     # Load Images and Sounds
     bg_image = pygame.image.load('intro_image/backgroundblank.png')
+    bg_image = pygame.transform.scale(bg_image, (screen_width, screen_height))  # Resize bg_image to fit the screen
+
     katsumi_image = pygame.image.load('intro_image/katsumi.png')
+    katsumi_image = pygame.transform.scale(katsumi_image, (200, 412))
+
     icons = {
         "meowth": pygame.image.load('intro_image/meowthshadow.png'),
         "thunder": pygame.image.load('intro_image/pikathunder.png'),
@@ -396,10 +383,10 @@ def intro_scene():
 
     # Audio
     intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
-    katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/introgame2.wav')
+    katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/xinchaoshatoshi.wav')
 
     # Set volume
-    intro_sound.set_volume(0.5)
+    intro_sound.set_volume(0.2)
     katsumi_voice.set_volume(1.0)
 
     # Play sounds using separate channels
@@ -410,25 +397,18 @@ def intro_scene():
     channel2.play(katsumi_voice)
 
     screen.blit(bg_image, (0, 0))  # draw the background image
-    screen.blit(katsumi_image, (100, 100))  # draw Katsumi on the screen at position (100,100)
+
+    # Position katsumi_image at the center bottom of the screen
+    x = screen_width / 2 - katsumi_image.get_width() / 2
+    y = screen_height - katsumi_image.get_height()
+    screen.blit(katsumi_image, (x, y))
 
     font = pygame.font.Font(None, 36)  # Choose the font for the text
-    guide_text = {
-        "meowth": "Meowth is a cunning adversary. Stay alert!",
-        "thunder": "Use Pikachu's Thunder attack to shock Meowth.",
-        "electricball": "Or, blast him with the Electric Ball attack.",
-        "irontail": "The Iron Tail attack is another powerful option.",
-    }
 
-    for idx, (icon_name, icon_img) in enumerate(icons.items()):
-        screen.blit(icon_img, (100, 200 + idx*100))  # Adjust position as per your requirement
-        text = font.render(guide_text[icon_name], True, (255, 255, 255))
-        screen.blit(text, (200, 200 + idx*100))  # Display text next to icon
-
+    
     pygame.display.update()  # Update the display
 
-    # You might want to add a delay or a specific condition to exit the intro scene.
-    # Let's wait for the user to press any key:
+    # Wait for the user to press any key
     waiting = True
     while waiting:
         for event in pygame.event.get():
@@ -437,7 +417,6 @@ def intro_scene():
                     waiting = False
 
     channel1.stop()  # Stop the background sound before exiting the intro scene
-
 
 
 
