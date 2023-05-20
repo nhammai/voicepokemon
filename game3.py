@@ -6,11 +6,6 @@ import os
 import time
 from understandjson import load_json_file
 
-
-
-
-
-
 pygame.init()
 
 # Game window size
