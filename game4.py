@@ -363,9 +363,14 @@ pygame.mixer.init(frequency=44100, buffer=512)
 # Assuming a 800x600 screen
 screen = pygame.display.set_mode((800, 600))
 
+import textwrap  # Module to handle text wrapping
+
 def intro_scene():
     # Size of the screen
     screen_width, screen_height = screen.get_size()
+
+    # Margin around the text
+    margin = 50
 
     # Load Images and Sounds
     bg_image = pygame.image.load('intro_image/backgroundblank.png')
@@ -373,13 +378,6 @@ def intro_scene():
 
     katsumi_image = pygame.image.load('intro_image/katsumi.png')
     katsumi_image = pygame.transform.scale(katsumi_image, (200, 412))
-
-    icons = {
-        "meowth": pygame.image.load('intro_image/meowthshadow.png'),
-        "thunder": pygame.image.load('intro_image/pikathunder.png'),
-        "electricball": pygame.image.load('intro_image/pikaelectricball.jpg'),
-        "irontail": pygame.image.load('intro_image/pikairontail.jpg'),
-    }
 
     # Audio
     intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
@@ -396,27 +394,77 @@ def intro_scene():
     pygame.time.wait(1000)
     channel2.play(katsumi_voice)
 
-    screen.blit(bg_image, (0, 0))  # draw the background image
+    # Text
+    intro_text = "Chào mừng Shatoshi đã trở lại với thế giới Pokemon. Mình là Kasumi, hướng dẫn viên  xinh đẹp và là bồ cũ của bạn. Hôm nay, chúng ta sẽ bắt đầu một hành trình mới, với đầy đủ những điều bất ngờ và thú vị. Bạn có cần mình giới thiệu một tí về cách thức chơi không nhỉ?"
 
-    # Position katsumi_image at the center bottom of the screen
-    x = screen_width / 2 - katsumi_image.get_width() / 2
-    y = screen_height - katsumi_image.get_height()
-    screen.blit(katsumi_image, (x, y))
+    font = pygame.font.Font('Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
-    font = pygame.font.Font(None, 36)  # Choose the font for the text
+    # Split the text into words
+    words = intro_text.split(' ')
+    # Calculate the delay between words based on the total duration (14s)
+    delay_per_word = 14000 / len(words)
 
-    
-    pygame.display.update()  # Update the display
+    # Time when the typing effect starts
+    start_time = pygame.time.get_ticks()
 
-    # Wait for the user to press any key
+    # Index of the word to display
+    word_index = 0
+
     waiting = True
+    while waiting:
+        current_time = pygame.time.get_ticks()
+        if current_time - start_time >= delay_per_word:  # Time for the next word
+            word_index += 1
+            start_time = current_time
+
+        # Concatenate the words to display
+        text_to_render = ' '.join(words[:word_index])
+
+        # Split the text into lines that don't exceed the screen width minus margins
+        wrapped_text = textwrap.wrap(text_to_render, width=(screen_width - 2 * margin) // 10)
+
+        # Clear the screen
+        screen.fill((0,0, 0))
+        screen.blit(bg_image, (0, 0))  # draw the background image
+
+        # Position katsumi_image at the center bottom of the screen
+        x = screen_width / 2 - katsumi_image.get_width() / 2
+        y = screen_height - katsumi_image.get_height()
+        screen.blit(katsumi_image, (x, y))  # draw Katsumi on the screen
+
+        # Display each line
+        y = margin  # Starting height for the text
+        for line in wrapped_text:
+            text_surface = font.render(line, True, (34, 34, 34)) # change teh color to yellow
+            screen.blit(text_surface, (margin, y))
+            y += font.get_height() + 5  # Increase y by the height of the font for the next line
+
+        pygame.display.update()
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
+                if event.key == pygame.K_RETURN:  # The key is the Enter key
+                    waiting = False
+
+        # Stop when all words have been displayed
+        if word_index >= len(words):
+            break
+
+    # After all words have been displayed, wait until the Enter key is pressed to exit
     while waiting:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
                 if event.key == pygame.K_RETURN:  # The key is the Enter key
                     waiting = False
 
-    channel1.stop()  # Stop the background sound before exiting the intro scene
+        pygame.time.wait(50)  # Delay to prevent the CPU from running at full speed in the waiting loop
+
+    channel1.stop()
+
+
+
+
 
 
 
