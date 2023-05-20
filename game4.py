@@ -8,6 +8,30 @@ from understandjson import load_json_file
 
 pygame.init()
 
+
+# Add intro material
+
+# Audio
+intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
+katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/introgame.wav')
+
+# Images
+bg_image = pygame.image.load('intro_image/backgroundblank.png')
+katsumi_image = pygame.image.load('intro_image/katsumi.png')
+
+# Icon images
+icons = {
+    "meowth": pygame.image.load('intro_image/meowthshadow.png'),
+    "thunder": pygame.image.load('intro_image/pikathunder.png'),
+    "electricball": pygame.image.load('intro_image/pikaelectricball.jpg'),
+    "irontail": pygame.image.load('intro_image/pikairontail.jpg'),
+}
+
+
+
+
+
+
 # Game window size
 width = 800
 height = 600
@@ -252,7 +276,7 @@ desired_y_meo = 150
 clock = pygame.time.Clock()
 FPS = 60
 player_turn = True
-battle_music.play(-1)
+# battle_music.play(-1)
 
 # Function to draw the health bars
 def draw_health_bars():
@@ -351,11 +375,75 @@ def check_winner():
 
 
 
+# Intro game
+
+# Initialize pygame mixer with custom frequency and buffer size
+pygame.mixer.init(frequency=44100, buffer=512)
+
+# Assuming a 800x600 screen
+screen = pygame.display.set_mode((800, 600))
+
+def intro_scene():
+    # Load Images and Sounds
+    bg_image = pygame.image.load('intro_image/backgroundblank.png')
+    katsumi_image = pygame.image.load('intro_image/katsumi.png')
+    icons = {
+        "meowth": pygame.image.load('intro_image/meowthshadow.png'),
+        "thunder": pygame.image.load('intro_image/pikathunder.png'),
+        "electricball": pygame.image.load('intro_image/pikaelectricball.jpg'),
+        "irontail": pygame.image.load('intro_image/pikairontail.jpg'),
+    }
+
+    # Audio
+    intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
+    katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/introgame2.wav')
+
+    # Set volume
+    intro_sound.set_volume(0.5)
+    katsumi_voice.set_volume(1.0)
+
+    # Play sounds using separate channels
+    channel1 = pygame.mixer.Channel(0)
+    channel2 = pygame.mixer.Channel(1)
+    channel1.play(intro_sound, -1)
+    pygame.time.wait(1000)
+    channel2.play(katsumi_voice)
+
+    screen.blit(bg_image, (0, 0))  # draw the background image
+    screen.blit(katsumi_image, (100, 100))  # draw Katsumi on the screen at position (100,100)
+
+    font = pygame.font.Font(None, 36)  # Choose the font for the text
+    guide_text = {
+        "meowth": "Meowth is a cunning adversary. Stay alert!",
+        "thunder": "Use Pikachu's Thunder attack to shock Meowth.",
+        "electricball": "Or, blast him with the Electric Ball attack.",
+        "irontail": "The Iron Tail attack is another powerful option.",
+    }
+
+    for idx, (icon_name, icon_img) in enumerate(icons.items()):
+        screen.blit(icon_img, (100, 200 + idx*100))  # Adjust position as per your requirement
+        text = font.render(guide_text[icon_name], True, (255, 255, 255))
+        screen.blit(text, (200, 200 + idx*100))  # Display text next to icon
+
+    pygame.display.update()  # Update the display
+
+    # You might want to add a delay or a specific condition to exit the intro scene.
+    # Let's wait for the user to press any key:
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
+                if event.key == pygame.K_RETURN:  # The key is the Enter key
+                    waiting = False
+
+    channel1.stop()  # Stop the background sound before exiting the intro scene
+
+
+
+
 # Main game loop
 last_pikachu_attack_time = 0
-
-
-def game_loop():
+def battle_scene():
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack, last_pikachu_attack_time
 
     pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
@@ -507,4 +595,15 @@ def game_loop():
         pygame.display.update()
         clock.tick(FPS)
 
-game_loop()
+
+
+
+
+
+def main():
+    intro_scene()  # Play the intro scene first
+    battle_scene()  # Then transition to the main game
+    
+
+if __name__ == "__main__":
+    main()
