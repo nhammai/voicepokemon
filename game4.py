@@ -379,6 +379,10 @@ def intro_scene():
     katsumi_image = pygame.image.load('intro_image/katsumi.png')
     katsumi_image = pygame.transform.scale(katsumi_image, (200, 412))
 
+    # Load Psyduck image
+    psyduck_image = pygame.image.load('intro_image/psyduck.png')
+    psyduck_image = pygame.transform.scale(psyduck_image, (142, 200))  # Resize psyduck_image to fit desired dimensions
+
     # Audio
     intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
     katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/xinchaoshatoshi.wav')
@@ -429,7 +433,10 @@ def intro_scene():
         x = screen_width / 2 - katsumi_image.get_width() / 2
         y = screen_height - katsumi_image.get_height()
         screen.blit(katsumi_image, (x, y))  # draw Katsumi on the screen
-
+        # Position psyduck_image to the right of katsumi_image
+        x_psyduck = x - katsumi_image.get_width() + 150  # 150 is the space between Katsumi and Psyduck
+        y_psyduck = screen_height - psyduck_image.get_height()  # This aligns the bottom of the images
+        screen.blit(psyduck_image, (x_psyduck, y_psyduck))  # Draw Psyduck on the screen
         # Display each line
         y = margin  # Starting height for the text
         for line in wrapped_text:
