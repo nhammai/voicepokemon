@@ -58,9 +58,14 @@ victory_full_sound.set_volume(0.9)
 
 pikachu_sound = pygame.mixer.Sound("./sounds/pikapika_big.wav")
 
+pikachu_e_charge = pygame.mixer.Sound("./sounds/echarge.wav")
 # play pikachu sound
 def play_pikachu_sound():
     pygame.mixer.Sound.play(pikachu_sound)
+
+# play pikachu sound
+def play_pikachu_ready():
+    pygame.mixer.Sound.play(pikachu_e_charge)
 
 superthundersound = pygame.mixer.Sound("./sounds/pikachu_attack.wav")
 
@@ -389,6 +394,7 @@ def game_loop():
                     print(command)
 
                     if (command["command"] == "thunder"):
+                        play_pikachu_ready()
                         timedelay = random.randint(5000, 7000)
                         pikachu.attack_name = "Thunderbolt"
                         pikachu.animation_imgs = thunder_imgs
@@ -402,6 +408,7 @@ def game_loop():
                             pikachu.animation_imgs = thunder_super
                             superthundersound.play()
                             superthundersound.play()
+                        time.sleep(2)
                     elif (command["command"] == "electricball"):
                         timedelay = random.randint(3000, 6000)
                         pikachu.attack_power = 30
@@ -442,14 +449,14 @@ def game_loop():
             
             choice = meo_auto(meo_options)
             if choice == "scratch":
-                meowth.attack_power = 10
+                meowth.attack_power = 15
                 meowth.attack_name = "Scratch"
                 meowth.attack_sound = scratch_attack_sound
                 meowth.animation_imgs = scratch_imgs
                 meowth.animation_x_offset = scratch_animation_offset_x
                 meowth.animation_y_offset = scratch_animation_offset_y
             elif choice == "bite":
-                meowth.attack_power = 15
+                meowth.attack_power = 20
                 meowth.attack_name = "Bite"
                 meowth.attack_sound = bite_attack_sound
                 meowth.animation_imgs = bite_imgs

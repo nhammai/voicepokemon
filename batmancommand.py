@@ -12,7 +12,7 @@ import re
 
 
 # Do text to command with open ai api
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 
 llm = OpenAI(temperature=0.9)
 template = """
@@ -221,7 +221,7 @@ def main():
             frames_per_buffer=porcupine.frame_length
         )
 
-        print("Listening for 'Pika chu'...")
+        print("Listening for 'Pikachu'...")
 
         while True:
             pcm = audio_stream.read(porcupine.frame_length)
