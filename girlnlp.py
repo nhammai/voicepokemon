@@ -15,10 +15,10 @@ import re
 os.environ["OPENAI_API_KEY"] = ""
 
 llm = OpenAI(temperature=0.9)
-template_areyouready = """
+template_ready = """
     act as if you're an super NLP model that you can understand everything about vietnamese language. Because we will talk with vietnamese here.
     You will analyze the sentence I provide to you. And the output is only "yes" or "no" and nothing else. Just "yes" or "no" never maybe. You can do it.
-    It like classify text. yes or no. To the question: "Bạn đã sẵn sàng để chinh phục thế giới Pokemon chưa nhỉ?". It mean: "Are you ready to conquer the Pokemon world?". 
+    It like classify text. yes or no. To the question: "Bạn đã sẵn sàng để chinh phục thế giới Pokemon chưa nhỉ?". or "Vậy bạn đã sẵn sàng chưa nào?". 
     Here are some examples to the answer is yes:
     "Có mình đã sẵn sàng" ,
     "Mình đã sẵn sàng",
@@ -30,6 +30,12 @@ template_areyouready = """
     "Ok",
     "bắt đầu nào",
     "Chơi liền",
+    "Tất nhiên! Tôi đã sẵn sàng từ lâu rồi, hãy đưa cho tôi những thử thách!",
+    "Chuẩn bị tốt rồi! Hãy bắt đầu cuộc phiêu lưu Pokemon ngay thôi!",
+    "Đương nhiên! Tôi đã sẵn sàng để đối mặt với mọi khó khăn và chiến thắng trong thế giới Pokemon!",
+    "Tôi đã nghiên cứu và luyện tập để sẵn sàng cho cuộc hành trình này. Hãy cho tôi cơ hội chứng minh!",
+
+
     "Chiến thôi nào",
     "Nhào dô",
     "Được rồi",
@@ -45,6 +51,10 @@ template_areyouready = """
     "Mình chưa chắc nữa",
     "Mình không rõ",
     "Mình thấy rất đáng sợ",
+    "Không, cảm ơn. Tôi cần thêm thời gian để chuẩn bị trước khi sẵn sàng.",
+    "Tôi cần một chút nữa để sẵn sàng. Hãy đợi tôi một chút.",
+    "Xin lỗi, nhưng tôi cảm thấy chưa đủ sẵn sàng để bắt đầu. Có thể tìm một lúc khác được không?",
+
     "Không, cảm ơn. Thế giới Pokemon không phù hợp với sở thích và mục tiêu của tôi.",
     "Tôi không quan tâm đến Pokemon lắm. Có lẽ tìm một thế giới khác phù hợp hơn với tôi.",
     "Xin lỗi, tôi không có hứng thú với việc chinh phục thế giới Pokemon. Chúc may mắn với những người khác!",
@@ -105,13 +115,20 @@ template_knowmore = """
 """
 
 
-prompt = PromptTemplate(
+prompt_knowmore = PromptTemplate(
+    input_variables=["sentence"],
+    template=template_knowmore,
+)
+
+prompt_ready = PromptTemplate(
     input_variables=["sentence"],
     template=template_knowmore,
 )
 
 
-chain = LLMChain(llm=llm, prompt=prompt)
+chain_knowmore = LLMChain(llm=llm, prompt=prompt_knowmore)
+chain_ready = LLMChain(llm=llm, prompt=prompt_ready)
+
 
 
 
@@ -135,12 +152,20 @@ def process_result(result):
 
 # print(processed_result)
 
-def speech2command():
+def speech2command_knowmore():
     sentence = speech2text()  # get the text from voice input
-    result = chain.run(sentence)
+    result = chain_knowmore.run(sentence)
     print(result)
     processed_result = process_result(result)
     print(processed_result)
     return processed_result
     
 
+def speech2command_ready():
+    sentence = speech2text()  # get the text from voice input
+    result = chain_ready.run(sentence)
+    print(result)
+    processed_result = process_result(result)
+    print(processed_result)
+    return processed_result
+    

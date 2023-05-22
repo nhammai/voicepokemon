@@ -180,11 +180,6 @@ def clean_response(response: str):
 
 chain = LLMChain(llm=llm, prompt=prompt)
 
-
-
-
-chain = LLMChain(llm=llm, prompt=prompt)
-
 def speech2command():
     sentence = speech2text()  # get the text from voice input
     result = chain.run(sentence)

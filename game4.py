@@ -5,7 +5,7 @@ import random
 import os
 import time
 from understandjson import load_json_file
-from girlnlp import speech2command 
+from girlnlp import speech2command_knowmore 
 from playsound import playsound
 
 pygame.init()
@@ -411,7 +411,7 @@ def intro_scene():
 
     # Text
     intro_text = "Chào mừng Shatoshi đã trở lại với thế giới Pokemon. Mình là Kasumi, hướng dẫn viên xinh đẹp và là bồ cũ của bạn. Hôm nay, chúng ta sẽ bắt đầu một hành trình mới, với đầy đủ những điều bất ngờ và thú vị. Bạn có cần mình giới thiệu một tí về cách thức chơi không nhỉ?"
-
+    
     font = pygame.font.Font('Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
     # Calculate the delay between characters based on the total duration (14s)
@@ -472,7 +472,7 @@ def intro_scene():
             break
 
     play_listen_sound()
-    answer = speech2command()
+    answer = speech2command_knowmore()
 
     if answer == "yes":
         channel2.play(katsumi_voice_2)
