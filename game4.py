@@ -5,6 +5,8 @@ import random
 import os
 import time
 from understandjson import load_json_file
+from girlnlp import speech2command 
+from playsound import playsound
 
 pygame.init()
 
@@ -62,6 +64,10 @@ victory_full_sound.set_volume(0.9)
 
 pikachu_sound = pygame.mixer.Sound("./sounds/pikapika_big.wav")
 
+listen_sound_path = pygame.mixer.Sound("./sounds/listening.mp3")
+
+def play_listen_sound():
+    pygame.mixer.Sound.play(listen_sound_path)
 # play pikachu sound
 def play_pikachu_sound():
     pygame.mixer.Sound.play(pikachu_sound)
@@ -385,18 +391,23 @@ def intro_scene():
 
     # Audio
     intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
-    katsumi_voice = pygame.mixer.Sound('sounds/girlvoice/xinchaoshatoshi.wav')
+    katsumi_voice_1 = pygame.mixer.Sound('sounds/girlvoice/xinchaoshatoshi.wav')
+    katsumi_voice_2 = pygame.mixer.Sound('sounds/girlvoice/duocroigtngangon.wav')
+    katsumi_voice_vaogame = pygame.mixer.Sound('sounds/girlvoice/tottrandaudautien.wav')
+
+
 
     # Set volume
     intro_sound.set_volume(0.3)
-    katsumi_voice.set_volume(1.0)
+    katsumi_voice_1.set_volume(1.0)
 
     # Play sounds using separate channels
     channel1 = pygame.mixer.Channel(0)
     channel2 = pygame.mixer.Channel(1)
+
     channel1.play(intro_sound, -1)
     pygame.time.wait(1000)
-    channel2.play(katsumi_voice)
+    channel2.play(katsumi_voice_1)
 
     # Text
     intro_text = "Chào mừng Shatoshi đã trở lại với thế giới Pokemon. Mình là Kasumi, hướng dẫn viên xinh đẹp và là bồ cũ của bạn. Hôm nay, chúng ta sẽ bắt đầu một hành trình mới, với đầy đủ những điều bất ngờ và thú vị. Bạn có cần mình giới thiệu một tí về cách thức chơi không nhỉ?"
@@ -443,8 +454,12 @@ def intro_scene():
             text_surface = font.render(line, True, (34, 34, 34)) # Change the color to yellow
             screen.blit(text_surface, (margin, y))
             y += font.get_height() + 5  # Increase y by the height of the font for the next line
+        
+        
 
         pygame.display.update()
+
+
 
         # Event handling
         for event in pygame.event.get():
@@ -456,6 +471,17 @@ def intro_scene():
         if char_index >= len(intro_text):
             break
 
+    play_listen_sound()
+    answer = speech2command()
+
+    if answer == "yes":
+        channel2.play(katsumi_voice_2)
+    else:
+        channel2.play(katsumi_voice_vaogame)
+
+
+
+
     # After all characters have been displayed, wait until the Enter key is pressed to exit
     while waiting:
         for event in pygame.event.get():
@@ -465,7 +491,9 @@ def intro_scene():
 
         pygame.time.wait(50)  # Delay to prevent the CPU from running at full speed in the waiting loop
 
+
     channel1.stop()
+    channel2.stop()
 
 
 
