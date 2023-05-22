@@ -1,32 +1,9 @@
 import pyaudio
-import os
-import time
-import pyaudio
 import wave
-import pygame
 import speech_recognition as sr
-
-
-def playSound(filename):
-    pygame.init()
-
-    # Load the audio file
-    
-    pygame.mixer.music.load(filename)
-
-    # Play the audio file
-    pygame.mixer.music.play()
-
-    # Wait for the audio to finish
-    while pygame.mixer.music.get_busy():
-        pygame.time.Clock().tick(10)
-
-
 
 # Initialize recognizer
 recognizer = sr.Recognizer()
-
-
 
 
 def speech2text():
@@ -37,10 +14,10 @@ def speech2text():
     seconds = 3
     filename = "output.wav"
 
-    p = pyaudio.PyAudio()  # Create an interface to PortAudio
+    # Create an interface to PortAudio
+    p = pyaudio.PyAudio()
 
     print('Recording')
-    # playSound("sounds/listening.mp3")
 
     stream = p.open(format=sample_format,
                     channels=channels,
@@ -51,18 +28,15 @@ def speech2text():
     frames = []  # Initialize array to store frames
 
     # Store data in chunks for 3 seconds
-    for i in range(0, int(fs / chunk * seconds)):
+    for _ in range(int(fs / chunk * seconds)):
         data = stream.read(chunk)
         frames.append(data)
 
-    # Stop and close the stream 
+    # Stop and close the stream
     stream.stop_stream()
     stream.close()
     # Terminate the PortAudio interface
     p.terminate()
-
-
-    playSound("sounds/pikachuready.wav")
 
     print('Finished recording')
 
@@ -78,25 +52,20 @@ def speech2text():
     with sr.AudioFile('output.wav') as source:
         audio = recognizer.record(source)
 
-    # Initialize the result variable
-    result = "Transcription failed"
-
     # Transcribe the audio using Google Web Speech API
     try:
         result = recognizer.recognize_google(audio, language='vi-VN')
-        print("Transcript: ", result)
+        print("Transcript:", result)
 
     except sr.UnknownValueError:
         print("Google Web Speech API could not understand the audio")
+        result = "Transcription failed"
     except sr.RequestError as e:
         print(f"Error: {e}")
-
-
-    
+        result = "Transcription failed"
 
     return result
 
-    
+
+# Uncomment the following line to test the speech2text function
 # k = speech2text()
-
-

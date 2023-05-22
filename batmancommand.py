@@ -12,7 +12,7 @@ import re
 
 
 # Do text to command with open ai api
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = "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"
 
 llm = OpenAI(temperature=0.9)
 template = """
@@ -138,43 +138,44 @@ prompt = PromptTemplate(
 )
 
 
+
+def is_valid_json(json_obj):
+    if "command" in json_obj and "amount" in json_obj:
+        return True
+    return False
+
 def clean_response(response: str):
-    try:
-        # This assumes that the JSON object always starts with '{' and ends with '}'
-        start_index = response.index('{')
-        end_index = response.rindex('}') + 1
-        json_str = response[start_index:end_index]
-        # Parse the string with a JSON decoder
-        json_obj = json.loads(json_str)
-        # Re-encode to get cleaned version
-        clean_json_str = json.dumps(json_obj, indent=4)
-        return clean_json_str
-    except ValueError:
-        # Find the start of json content
-        start = response.find('"Command"')
+    # Default JSON to return in case of invalid JSON structure
+    default_json = {
+        "command": "thunder",
+        "amount": "1000"
+    }
 
-        # Find the end of json content by matching the pattern
-        # Updated regex pattern to match 'amount' case-insensitively
-        pattern = r'"[Aa]mount": "\d+"'
-        match = re.search(pattern, response)
+    # Search for a JSON-like pattern in the response
+    match = re.search(r'"\s*command"\s*:\s*".*"\s*,\s*"\s*amount"\s*:\s*".*"', response)
+    
+    if match:
+        # Get the matched text and wrap it with curly braces
+        json_str = '{' + match.group(0) + '}'
+        
+        try:
+            # Attempt to parse it as JSON
+            json_obj = json.loads(json_str)
 
-        if not match:
-            return response  # Return original response if no match found
-
-        end = match.end()
-
-        # Extract json content
-        json_content = '{' + response[start:end] + '}'
-
-        # Load as python dictionary
-        data = json.loads(json_content)
-
-        # Convert back to json formatted string
-        clean_json = json.dumps(data, indent=4)
-
-        return clean_json
-
-
+            # Validate the JSON structure
+            if not is_valid_json(json_obj):
+                return json.dumps(default_json, indent=4)
+            
+            # Re-encode to a pretty-printed JSON string
+            pretty_json_str = json.dumps(json_obj, indent=4)
+            
+            return pretty_json_str
+        except json.JSONDecodeError:
+            # If JSON decoding fails, return the default JSON
+            return json.dumps(default_json, indent=4)
+    else:
+        # If no JSON-like pattern is found, return the default JSON
+        return json.dumps(default_json, indent=4)
 
 
 chain = LLMChain(llm=llm, prompt=prompt)
@@ -187,6 +188,7 @@ chain = LLMChain(llm=llm, prompt=prompt)
 def speech2command():
     sentence = speech2text()  # get the text from voice input
     result = chain.run(sentence)
+    print(result)
     result = clean_response(result)
     with open("command.json", "w+", encoding="utf-8") as f:  # Use 'w+' mode to open the file for both writing and reading
         f.truncate(0)  # This will make sure the file is completely empty

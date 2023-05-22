@@ -47,7 +47,7 @@ meowth_win_img = pygame.transform.scale(meowth_win_img, (250, 250))
 
 # Load sounds
 battle_music = pygame.mixer.Sound("./sounds/battle_music.mp3")
-battle_music.set_volume(0.4)  # Add this line to adjust the volume
+battle_music.set_volume(0.3)  # Add this line to adjust the volume
 
 ko_sound = pygame.mixer.Sound("./sounds/KObig.wav")
 ko_sound.set_volume(1.0)  # Adjust the volume; 1.0 is the maximum volume
@@ -391,6 +391,8 @@ def game_loop():
                     if (command["command"] == "thunder"):
                         timedelay = random.randint(5000, 7000)
                         pikachu.attack_name = "Thunderbolt"
+                        pikachu.animation_imgs = thunder_imgs
+                        
                         pikachu.attack_power = command["amount"]*40/10000
                         pikachu.attack_sound = thunder_attack_sound
                         print(pikachu.attack_power)
@@ -418,7 +420,13 @@ def game_loop():
                         pikachu.animation_y_offset = irontail_animation_offset_y
 
                     else:
+                        timedelay = random.randint(5000, 7000)
+                        pikachu.attack_name = "Thunderbolt"
+                        pikachu.attack_power = command["amount"]*40/10000
+                        pikachu.attack_sound = thunder_attack_sound
                         pikachu.animation_imgs = thunder_imgs
+
+
                     pikachu.attack(meowth)
                     pikachu.attack_power = 40 # return to normal attack power
                     
