@@ -29,3 +29,20 @@ count scale to pikachu png image
 => 250, 141
 
 
+
+Psyduck
+
+640x898
+
+
+    guide_text = """Trong game này bạn cùng pikachu sẽ đấu với các nhân vật bí ẩn cho đến khi pikachu hoặc đối phương mất khả năng chiến đấu.
+
+Khi đến lượt bạn, hãy hô to Pi ka chu để thu hút sự chú ý của pikachu.
+
+Sau đó hãy ra lệnh nhanh và dứt khoát chiêu thức mà bạn muốn Pikachu sẽ tung ra.
+
+Pikachu hiện tại đang có ba chiêu thức: Phóng điện, quả cầu điện và đuôi thép.
+
+Ví dụ để dùng phóng điện: Bạn sẽ hô to Pi ka chu. Phóng điện 10 ngàn vôn.
+
+Và pikachu sẽ phóng điện theo ý bạn muốn."""

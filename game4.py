@@ -5,7 +5,7 @@ import random
 import os
 import time
 from understandjson import load_json_file
-from girlnlp import speech2command_knowmore 
+# from girlnlp import speech2command_knowmore 
 from playsound import playsound
 
 pygame.init()
@@ -394,6 +394,8 @@ def intro_scene():
     katsumi_voice_1 = pygame.mixer.Sound('sounds/girlvoice/xinchaoshatoshi.wav')
     katsumi_voice_2 = pygame.mixer.Sound('sounds/girlvoice/duocroigtngangon.wav')
     katsumi_voice_vaogame = pygame.mixer.Sound('sounds/girlvoice/tottrandaudautien.wav')
+    katsumi_voice_guide = pygame.mixer.Sound('sounds/girlvoice/gioithieungangon.wav')
+
 
 
 
@@ -409,13 +411,30 @@ def intro_scene():
     pygame.time.wait(1000)
     channel2.play(katsumi_voice_1)
 
+    def display_background():
+        screen.fill((0, 0, 0))
+        screen.blit(bg_image, (0, 0))  # draw the background image
+
+    def display_full_chacter_background():
+        display_background()
+        # Position katsumi_image at the center bottom of the screen
+        x = screen_width / 2 - katsumi_image.get_width() / 2
+        y = screen_height - katsumi_image.get_height()
+        screen.blit(katsumi_image, (x, y))  # draw Katsumi on the screen
+        # Position psyduck_image to the right of katsumi_image
+        x_psyduck = x - katsumi_image.get_width() + 150  # 150 is the space between Katsumi and Psyduck
+        y_psyduck = screen_height - psyduck_image.get_height()  # This aligns the bottom of the images
+        screen.blit(psyduck_image, (x_psyduck, y_psyduck))  # Draw Psyduck on the screen
+
     # Text
     intro_text = "Chào mừng Shatoshi đã trở lại với thế giới Pokemon. Mình là Kasumi, hướng dẫn viên xinh đẹp và là bồ cũ của bạn. Hôm nay, chúng ta sẽ bắt đầu một hành trình mới, với đầy đủ những điều bất ngờ và thú vị. Bạn có cần mình giới thiệu một tí về cách thức chơi không nhỉ?"
-    
+
+    duoctroi_text = "Được rồi, mình sẽ giới thiệu ngắn gọn nhé!"
     font = pygame.font.Font('Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
     # Calculate the delay between characters based on the total duration (14s)
     delay_per_char = 13000 / len(intro_text)
+
 
     # Time when the typing effect starts
     start_time = pygame.time.get_ticks()
@@ -436,18 +455,8 @@ def intro_scene():
         # Split the text into lines that don't exceed the screen width minus margins
         wrapped_text = textwrap.wrap(text_to_render, width=(screen_width - 2 * margin) // 10)
 
-        # Clear the screen
-        screen.fill((0, 0, 0))
-        screen.blit(bg_image, (0, 0))  # draw the background image
-
-        # Position katsumi_image at the center bottom of the screen
-        x = screen_width / 2 - katsumi_image.get_width() / 2
-        y = screen_height - katsumi_image.get_height()
-        screen.blit(katsumi_image, (x, y))  # draw Katsumi on the screen
-        # Position psyduck_image to the right of katsumi_image
-        x_psyduck = x - katsumi_image.get_width() + 150  # 150 is the space between Katsumi and Psyduck
-        y_psyduck = screen_height - psyduck_image.get_height()  # This aligns the bottom of the images
-        screen.blit(psyduck_image, (x_psyduck, y_psyduck))  # Draw Psyduck on the screen
+        display_full_chacter_background()
+        
         # Display each line
         y = margin  # Starting height for the text
         for line in wrapped_text:
@@ -472,12 +481,62 @@ def intro_scene():
             break
 
     play_listen_sound()
-    answer = speech2command_knowmore()
-
+    # answer = speech2command_knowmore()
+    answer = "yes"
     if answer == "yes":
-        channel2.play(katsumi_voice_2)
+        next_voice = katsumi_voice_2
+        # pygame.time.delay(3000)
+
+
     else:
-        channel2.play(katsumi_voice_vaogame)
+        next_voice = katsumi_voice_vaogame
+
+
+    
+    #Alright I will intro shortly
+
+        # Index of the character to display
+    channel2.play(next_voice)
+
+    char_index = 0
+    delay_per_char_duocroi = 2000 / len(duoctroi_text)
+    
+
+
+
+
+    waiting = True
+    while waiting:
+        current_time = pygame.time.get_ticks()
+        if current_time - start_time >= delay_per_char_duocroi:  # Time for the next character
+            char_index += 1
+            start_time = current_time
+
+        # Concatenate the characters to display
+        text_to_render = duoctroi_text[:char_index]
+
+        # Split the text into lines that don't exceed the screen width minus margins
+        wrapped_text = textwrap.wrap(text_to_render, width=(screen_width - 2 * margin) // 10)
+
+        # Clear the screen
+
+        display_full_chacter_background()
+
+        # Display each line
+        y = margin  # Starting height for the text
+        for line in wrapped_text:
+            text_surface = font.render(line, True, (34, 34, 34)) # Change the color to yellow
+            screen.blit(text_surface, (margin, y))
+            y += font.get_height() + 5  # Increase y by the height of the font for the next line
+        
+        
+        pygame.display.update()
+
+                # Stop when all characters have been displayed
+        if char_index >= len(duoctroi_text):
+            break
+
+
 
 
 
