@@ -4,9 +4,11 @@ import sys
 import random
 import os
 import time
+
 from understandjson import load_json_file
 # from girlnlp import speech2command_knowmore 
 from playsound import playsound
+import moviepy.editor
 
 pygame.init()
 
@@ -360,6 +362,32 @@ def check_winner():
                 battle_music.stop()  # Stop the background sound
 
 
+# Guide
+
+def play_video(screen, path):
+    screen_width, screen_height = screen.get_size() # Get screen dimensions
+    clip = moviepy.editor.VideoFileClip(path)
+    clip = clip.resize(height=screen_height, width=screen_width) # Fit video to screen size
+    clip.preview()
+    pygame.display.set_mode((screen_width, screen_height)) # Recreate the pygame window
+
+# from pyvidplayer import Video
+
+# vid = Video("videos/guide.mp4")
+# vid.set_size((800, 600))
+
+# def guide():
+#     while True:
+#         vid.draw(screen, (0, 0))
+#         pygame.display.update()
+#         for event in pygame.event.get():
+#             if event.type == pygame.MOUSEBUTTONDOWN:
+#                 vid.close()
+#                 # battle_scene()
+
+
+
+
 # Transition
 
 def transition_fade(screen, type='in', speed=1):
@@ -534,11 +562,14 @@ def intro_scene():
         text_generate(katsumi_voice_duoctroi, duocroi_text, delay_per_char_duocroi)
         transition_fade(screen, 'in', 2)
         transition_fade(screen, 'out', 2)
+        play_video(screen, 'videos/guide.mp4')
+
         # add the video intro
+        # guide()
+
     else:
         text_generate(katsumi_voice_vaogame, vaogame_text, delay_per_char_vaogame)
 
-    
 
     
 
