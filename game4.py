@@ -388,6 +388,18 @@ def play_video(screen, path):
 
 
 
+# Play the video
+# play_video('videos/guide.mp4')
+
+
+
+
+
+
+
+
+
+
 # Transition
 
 def transition_fade(screen, type='in', speed=1):
@@ -455,6 +467,8 @@ def intro_scene():
     katsumi_voice_duoctroi = pygame.mixer.Sound('sounds/girlvoice/duocroigtngangon.wav')
     katsumi_voice_vaogame = pygame.mixer.Sound('sounds/girlvoice/tottrandaudautien.wav')
     katsumi_voice_guide = pygame.mixer.Sound('sounds/girlvoice/gioithieungangon.wav')
+    katsumi_voice_guide_long = pygame.mixer.Sound('sounds/girlvoice/mix01.wav')
+
 
     # Text
     intro_text = "Chào mừng Shatoshi đã trở lại với thế giới Pokemon. Mình là Kasumi, hướng dẫn viên xinh đẹp và là bồ cũ của bạn. Hôm nay, chúng ta sẽ bắt đầu một hành trình mới, với đầy đủ những điều bất ngờ và thú vị. Bạn có cần mình giới thiệu một tí về cách thức chơi không nhỉ?"
@@ -462,7 +476,6 @@ def intro_scene():
     duocroi_text = "Được rồi, mình sẽ giới thiệu ngắn gọn nhé!"
 
     vaogame_text = "Tốt chúng ta sẽ bắt đầu với trận đấu đầu tiên với con mèo của đội hoả tiễn. Chúc bạn may mắn nhé!"
-
 
 
     # time delay
@@ -480,6 +493,64 @@ def intro_scene():
 
     channel1.play(intro_sound, -1)
     pygame.time.wait(1000)
+
+
+    import cv2
+    import numpy as np
+
+    def play_video(filename):
+        # Open the video file
+        cap = cv2.VideoCapture(filename)
+
+        # Get the frame rate of the video
+        fps = cap.get(cv2.CAP_PROP_FPS)
+
+        # Calculate new fps to play the video in 44 seconds
+        video_length_in_seconds = cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps
+        new_fps = cap.get(cv2.CAP_PROP_FRAME_COUNT) / 37  # new fps to make the video play in 44 seconds
+
+        # Get screen size
+        screen_res = '1920x1080'
+        screen_width, screen_height = map(int, screen_res.split('x'))
+
+        # Set the window to fullscreen
+        cv2.namedWindow('Video', cv2.WINDOW_NORMAL)
+        cv2.setWindowProperty('Video', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+        while(cap.isOpened()):
+            # Read a frame from the video file
+            ret, frame = cap.read()
+
+            # If the frame was read successfully
+            if ret:
+                # Resize the frame
+                aspect_ratio = frame.shape[1] / float(frame.shape[0])
+                if(aspect_ratio > screen_width / screen_height):
+                    # Based on width
+                    new_width = screen_width
+                    new_height = np.round(new_width / aspect_ratio).astype(int)
+                else:
+                    # Based on height
+                    new_height = screen_height
+                    new_width = np.round(new_height * aspect_ratio).astype(int)
+                frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_AREA)
+
+                # Display the frame in a window
+                cv2.imshow('Video', frame)
+
+                # Wait for a delay equivalent to the new frame rate of the video
+                if cv2.waitKey(int(1000 / new_fps)) & 0xFF == ord('q'):
+                    break
+            else:
+                break
+
+        # Close the video file
+        cap.release()
+
+        # Close all OpenCV windows
+        cv2.destroyAllWindows()
+
+
     # channel2.play(katsumi_voice_1)
 
     def display_background():
@@ -562,7 +633,11 @@ def intro_scene():
         text_generate(katsumi_voice_duoctroi, duocroi_text, delay_per_char_duocroi)
         transition_fade(screen, 'in', 2)
         transition_fade(screen, 'out', 2)
-        play_video(screen, 'videos/guide.mp4')
+        # play_video(screen, 'videos/guide.mp4')
+        channel2.play(katsumi_voice_guide_long)
+
+        play_video('videos/guide.mp4')
+
 
         # add the video intro
         # guide()
@@ -571,7 +646,7 @@ def intro_scene():
         text_generate(katsumi_voice_vaogame, vaogame_text, delay_per_char_vaogame)
 
 
-    
+    text_generate(katsumi_voice_vaogame, vaogame_text, delay_per_char_vaogame)
 
     # text_generate(next_voice, next_text, next_delay)
 
