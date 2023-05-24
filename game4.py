@@ -5,7 +5,7 @@ import random
 import os
 import time
 from understandjson import load_json_file
-from girlnlp import speech2command_knowmore 
+# from girlnlp import speech2command_knowmore 
 from playsound import playsound
 
 pygame.init()
@@ -360,8 +360,36 @@ def check_winner():
                 battle_music.stop()  # Stop the background sound
 
 
+# Transition
+
+def transition_fade(screen, type='in', speed=1):
+    screen_width, screen_height = screen.get_size()  # Get screen dimensions
+    fade_surface = pygame.Surface((screen_width, screen_height))  # Create a surface for fading
+    fade_surface.fill((0,0,0))  # Fill the surface with black color
+    alpha = 0 if type == 'in' else 255
+
+    while True:
+        if type == 'in' and alpha >= 255:
+            break
+        elif type == 'out' and alpha <= 0:
+            break
+
+        fade_surface.set_alpha(alpha)
+        screen.blit(fade_surface, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(speed)
+
+        alpha = alpha + speed if type == 'in' else alpha - speed
+
+
+
+
 
 # Intro game
+
+    
+
+
 
 # Initialize pygame mixer with custom frequency and buffer size
 pygame.mixer.init(frequency=44100, buffer=512)
@@ -370,6 +398,7 @@ pygame.mixer.init(frequency=44100, buffer=512)
 screen = pygame.display.set_mode((800, 600))
 
 import textwrap  # Module to handle text wrapping
+
 
 def intro_scene():
     # Size of the screen
@@ -384,7 +413,10 @@ def intro_scene():
 
     katsumi_image = pygame.image.load('intro_image/katsumi.png')
     katsumi_image = pygame.transform.scale(katsumi_image, (200, 412))
-
+    
+        # Load Images and Sounds
+    scene0 = pygame.image.load('guide/scene_0.png')
+    scene0 = pygame.transform.scale(bg_image, (screen_width, screen_height)) 
     # Load Psyduck image
     psyduck_image = pygame.image.load('intro_image/psyduck.png')
     psyduck_image = pygame.transform.scale(psyduck_image, (142, 200))  # Resize psyduck_image to fit desired dimensions
@@ -437,6 +469,11 @@ def intro_scene():
         y_psyduck = screen_height - psyduck_image.get_height()  # This aligns the bottom of the images
         screen.blit(psyduck_image, (x_psyduck, y_psyduck))  # Draw Psyduck on the screen
 
+
+
+
+
+  
     
     waiting = True
     def text_generate(sound, text, text_delay):
@@ -485,30 +522,30 @@ def intro_scene():
             # Stop when all characters have been displayed
             if char_index >= len(text):
                 break
-
+    
 
     text_generate(katsumi_voice_intro, intro_text, delay_per_char_intro )
+    
 
     play_listen_sound()
-    answer = speech2command_knowmore()
-    # answer = "yes"
+    # answer = speech2command_knowmore()
+    answer = "yes"
     if answer == "yes":
-        next_voice = katsumi_voice_duoctroi
-        next_text = duocroi_text
-        next_delay = delay_per_char_duocroi
-
+        text_generate(katsumi_voice_duoctroi, duocroi_text, delay_per_char_duocroi)
+        transition_fade(screen, 'in', 2)
+        transition_fade(screen, 'out', 2)
+        # add the video intro
     else:
-        next_voice = katsumi_voice_vaogame
-        next_text = vaogame_text
-        next_delay = delay_per_char_vaogame
-
+        text_generate(katsumi_voice_vaogame, vaogame_text, delay_per_char_vaogame)
 
     
+
     
 
-    text_generate(next_voice, next_text, next_delay)
+    # text_generate(next_voice, next_text, next_delay)
 
 
+    # if answer == "yes":
 
 
     # After all characters have been displayed, wait until the Enter key is pressed to exit
