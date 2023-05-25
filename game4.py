@@ -13,9 +13,6 @@ import moviepy.editor
 pygame.init()
 
 
-
-
-
 # Game window size
 width = 800
 height = 600
@@ -467,7 +464,10 @@ def intro_scene():
     katsumi_voice_duoctroi = pygame.mixer.Sound('sounds/girlvoice/duocroigtngangon.wav')
     katsumi_voice_vaogame = pygame.mixer.Sound('sounds/girlvoice/tottrandaudautien.wav')
     katsumi_voice_guide = pygame.mixer.Sound('sounds/girlvoice/gioithieungangon.wav')
-    katsumi_voice_guide_long = pygame.mixer.Sound('sounds/girlvoice/mix01.wav')
+    katsumi_voice_guide_long = pygame.mixer.Sound('sounds/girlvoice/mix02.wav')
+    katsumi_voice_radongiandungko = pygame.mixer.Sound('sounds/girlvoice/ratdongiandungko.wav')
+
+
 
 
     # Text
@@ -476,12 +476,19 @@ def intro_scene():
     duocroi_text = "Được rồi, mình sẽ giới thiệu ngắn gọn nhé!"
 
     vaogame_text = "Tốt chúng ta sẽ bắt đầu với trận đấu đầu tiên với con mèo của đội hoả tiễn. Chúc bạn may mắn nhé!"
+    ratdongiandungko_text  = "Rất đơn giản đúng không. Bạn chỉ cần đọc to pikachu và đọc to chiêu thức lên là xong. Vậy bạn đã sẵn sàng chưa nào?"
+
+    
+
+
 
 
     # time delay
     delay_per_char_intro = 13000 / len(intro_text) # 14 s
     delay_per_char_duocroi = 2000 / len(duocroi_text)
     delay_per_char_vaogame = 4000 / len(vaogame_text)
+    delay_per_char_ratdongiandungko = 6000 / len(ratdongiandungko_text)
+
 
     # Set volume
     intro_sound.set_volume(0.3)
@@ -507,7 +514,7 @@ def intro_scene():
 
         # Calculate new fps to play the video in 44 seconds
         video_length_in_seconds = cap.get(cv2.CAP_PROP_FRAME_COUNT) / fps
-        new_fps = cap.get(cv2.CAP_PROP_FRAME_COUNT) / 37  # new fps to make the video play in 44 seconds
+        new_fps = cap.get(cv2.CAP_PROP_FRAME_COUNT) / 37.5  # new fps to make the video play in 44 seconds
 
         # Get screen size
         screen_res = '1920x1080'
@@ -623,10 +630,18 @@ def intro_scene():
                 break
     
 
+
+    def askquestion(sound, text, delay_per_char):
+        answer = "yes"
+        text_generate(sound, text, delay_per_char )
+        play_listen_sound()
+        # answer = speech2command_knowmore()
+        return answer
+
+
     text_generate(katsumi_voice_intro, intro_text, delay_per_char_intro )
     
 
-    play_listen_sound()
     # answer = speech2command_knowmore()
     answer = "yes"
     if answer == "yes":
@@ -638,6 +653,9 @@ def intro_scene():
 
         play_video('videos/guide.mp4')
 
+        text_generate(katsumi_voice_radongiandungko, ratdongiandungko_text, delay_per_char_ratdongiandungko)
+
+
 
         # add the video intro
         # guide()
@@ -646,12 +664,193 @@ def intro_scene():
         text_generate(katsumi_voice_vaogame, vaogame_text, delay_per_char_vaogame)
 
 
-    text_generate(katsumi_voice_vaogame, vaogame_text, delay_per_char_vaogame)
 
     # text_generate(next_voice, next_text, next_delay)
 
 
     # if answer == "yes":
+
+
+    # After all characters have been displayed, wait until the Enter key is pressed to exit
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
+                if event.key == pygame.K_RETURN:  # The key is the Enter key
+                    waiting = False
+
+        pygame.time.wait(50)  # Delay to prevent the CPU from running at full speed in the waiting loop
+
+
+    channel1.stop()
+    channel2.stop()
+
+
+
+def playagain_scene(win):
+    # Size of the screen
+    screen_width, screen_height = screen.get_size()
+
+    # Margin around the text
+    margin = 50
+
+    # Load Images and Sounds
+    bg_image = pygame.image.load('intro_image/backgroundblank.png')
+    bg_image = pygame.transform.scale(bg_image, (screen_width, screen_height))  # Resize bg_image to fit the screen
+
+    katsumi_image = pygame.image.load('intro_image/katsumi.png')
+    katsumi_image = pygame.transform.scale(katsumi_image, (200, 412))
+    
+        # Load Images and Sounds
+    scene0 = pygame.image.load('guide/scene_0.png')
+    scene0 = pygame.transform.scale(bg_image, (screen_width, screen_height)) 
+    # Load Psyduck image
+    psyduck_image = pygame.image.load('intro_image/psyduck.png')
+    psyduck_image = pygame.transform.scale(psyduck_image, (142, 200))  # Resize psyduck_image to fit desired dimensions
+
+    # Audio
+    intro_sound = pygame.mixer.Sound('sounds/girlvoice/introbackground.wav')
+    katsumi_voice_chucmungchoilaiko = pygame.mixer.Sound('sounds/girlvoice/chucmungchoilaiko.wav') # chien thang choi lai ko
+    katsumi_voice_choilaigameko = pygame.mixer.Sound('sounds/girlvoice/choilaigameko.wav') # pikachu mat kha nang chien dau
+    katsumi_voice_batdaulaicolen = pygame.mixer.Sound('sounds/girlvoice/batdaulaicolen.wav')
+    katsumi_voice_okbatdaulai = pygame.mixer.Sound('sounds/girlvoice/okbatdaulai.wav')
+    katsumi_voice_hengaplai = pygame.mixer.Sound('sounds/girlvoice/hengaplai.wav')
+
+
+
+
+    # Text
+    chucmungchoilaiko_text = "Chúc mừng Shatoshi và Pikachu đã chiến thắng. Bạn có muốn chơi lại không nhỉ?"
+
+    choilaigameko_text = "Pikachu đã mất khả năng chiến đấu. Bạn có muốn chơi lại game không nhỉ?"
+
+    okbatdaulai_text = "Ok. Chúng ta bắt đầu lại trận đấu nào!!"
+    batdaulaicolen_text  = "Vậy chúng ta bắt đầu lại trận đấu nào. Cố lên, bạn và Pikachu sẽ làm được!!"
+    hengaplai_text  = "Vậy hẹn gặp bạn lần sau nhé. Mình nghe giang hồ đồn các phiên bản tiếp theo sẽ thú vị hơn nhiều đấy. Đừng quên để lại feedback cho người tạo game Mai Khánh Nhâm để anh ý cải thiện hơn nhé. Bái bai Shatoshi"
+
+
+    
+
+
+
+
+    # time delay
+    delay_per_char_chucmungchoilaiko = 4000 / len(chucmungchoilaiko_text) 
+    delay_per_char_choilaigameko = 3000 / len(choilaigameko_text) 
+    delay_per_char_okbatdaulai = 2000 / len(okbatdaulai_text)
+    delay_per_char_batdaulaicolen = 4000 / len(batdaulaicolen_text)
+
+
+    # Set volume
+    intro_sound.set_volume(0.3)
+    # katsumi_voice_.set_volume(1.0)
+
+    # Play sounds using separate channels
+    channel1 = pygame.mixer.Channel(0)
+    channel2 = pygame.mixer.Channel(1)
+
+    channel1.play(intro_sound, -1)
+    pygame.time.wait(1000)
+
+
+    # channel2.play(katsumi_voice_1)
+
+    def display_background():
+        screen.fill((0, 0, 0))
+        screen.blit(bg_image, (0, 0))  # draw the background image
+
+    def display_full_chacter_background():
+        display_background()
+        # Position katsumi_image at the center bottom of the screen
+        x = screen_width / 2 - katsumi_image.get_width() / 2
+        y = screen_height - katsumi_image.get_height()
+        screen.blit(katsumi_image, (x, y))  # draw Katsumi on the screen
+        # Position psyduck_image to the right of katsumi_image
+        x_psyduck = x - katsumi_image.get_width() + 150  # 150 is the space between Katsumi and Psyduck
+        y_psyduck = screen_height - psyduck_image.get_height()  # This aligns the bottom of the images
+        screen.blit(psyduck_image, (x_psyduck, y_psyduck))  # Draw Psyduck on the screen
+  
+    
+    waiting = True
+    def text_generate(sound, text, text_delay):
+        font = pygame.font.Font('Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
+
+        channel2.play(sound)
+
+        # Time when the typing effect starts
+        start_time = pygame.time.get_ticks()
+
+        # Index of the character to display
+        char_index = 0
+
+        waiting = True
+        while waiting:
+            current_time = pygame.time.get_ticks()
+            if current_time - start_time >= text_delay:  # Time for the next character
+                char_index += 1
+                start_time = current_time
+
+            # Concatenate the characters to display
+            text_to_render = text[:char_index]
+
+            # Split the text into lines that don't exceed the screen width minus margins
+            wrapped_text = textwrap.wrap(text_to_render, width=(screen_width - 2 * margin) // 10)
+
+            display_full_chacter_background()
+            
+            # Display each line
+            y = margin  # Starting height for the text
+            for line in wrapped_text:
+                text_surface = font.render(line, True, (34, 34, 34)) # Change the color to yellow
+                screen.blit(text_surface, (margin, y))
+                y += font.get_height() + 5  # Increase y by the height of the font for the next line
+            
+            
+
+            pygame.display.update()
+
+            # Event handling
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
+                    if event.key == pygame.K_RETURN:  # The key is the Enter key
+                        waiting = False
+
+            # Stop when all characters have been displayed
+            if char_index >= len(text):
+                break
+    
+
+
+    def askquestion(sound, text, delay_per_char):
+        answer = "yes"
+        text_generate(sound, text, delay_per_char )
+        play_listen_sound()
+        # answer = speech2command_knowmore()
+        return answer
+
+    if win == True:
+        again = askquestion(katsumi_voice_chucmungchoilaiko, chucmungchoilaiko_text, delay_per_char_chucmungchoilaiko)
+        if again == "yes":
+            # ok bat dau lai
+            text_generate(katsumi_voice_okbatdaulai, okbatdaulai_text, delay_per_char_okbatdaulai )
+            
+            #choi lai
+            pass
+        else:
+            #ending scene
+            pass
+    else:
+        again = askquestion(katsumi_voice_choilaigameko, choilaigameko_text, delay_per_char_choilaigameko)
+        if again == "yes":
+            # bat dau lai co len
+            text_generate(katsumi_voice_batdaulaicolen, batdaulaicolen_text, delay_per_char_batdaulaicolen )
+
+            # choi lai
+            pass
+        else:
+            #ending scene
+            pass
+            
+
 
 
     # After all characters have been displayed, wait until the Enter key is pressed to exit
