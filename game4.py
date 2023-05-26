@@ -293,6 +293,7 @@ def draw_health_bars():
 
 # Function to check the winner and display the result
 def check_winner():
+
     if pikachu.hp <= 0 or meowth.hp <= 0:
         pikachu.defeated = pikachu.hp <= 0
         meowth.defeated = meowth.hp <= 0
@@ -322,6 +323,7 @@ def check_winner():
 
             elif meowth.hp > pikachu.hp:
                 meowth.image = meowth_win_img
+            
 
 
             # font = pygame.font.Font(None, 72)
@@ -347,7 +349,13 @@ def check_winner():
             screen.blit(shadow_text, shadow_pos)
             screen.blit(text, text_rect)
 
-            draw_button(screen, "Play Again", 350, 450, 100, 50, (0, 200, 0), (0, 255, 0), reset_game)
+            # draw_button(screen, "Play Again", 350, 450, 100, 50, (0, 200, 0), (0, 255, 0), reset_game)
+
+           
+
+            
+
+        PLAY_AGAIN_EVENT = pygame.USEREVENT + 1
 
 
         if pikachu.winner_banner_displayed or meowth.winner_banner_displayed:
@@ -357,6 +365,18 @@ def check_winner():
                 pikachu.sound_played = True
                 meowth.sound_played = True
                 battle_music.stop()  # Stop the background sound
+                pygame.time.set_timer(PLAY_AGAIN_EVENT, 1500)  # 1500 milliseconds = 1.5 seconds
+
+
+        for event in pygame.event.get():
+            if event.type == PLAY_AGAIN_EVENT:
+                playagain_scene(pikachu.hp > meowth.hp)
+                pygame.time.set_timer(PLAY_AGAIN_EVENT, 0)  # clear the timer
+
+                
+            
+
+
 
 
 # Guide
@@ -651,7 +671,7 @@ def intro_scene():
         # play_video(screen, 'videos/guide.mp4')
         channel2.play(katsumi_voice_guide_long)
 
-        play_video('videos/guide.mp4')
+        # play_video('videos/guide.mp4')
 
         text_generate(katsumi_voice_radongiandungko, ratdongiandungko_text, delay_per_char_ratdongiandungko)
 
@@ -1020,9 +1040,12 @@ def battle_scene():
 
         draw_health_bars()
         check_winner()
+        # playagain_scene(pikachu.hp > meowth.hp)
+
 
         pygame.display.update()
         clock.tick(FPS)
+
 
 
 
