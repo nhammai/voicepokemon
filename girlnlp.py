@@ -114,6 +114,52 @@ template_knowmore = """
 
 """
 
+template_playagain = """
+    act as if you're an super NLP model that you can understand everything about vietnamese language. Because we will talk with vietnamese here.
+    You will analyze the sentence I provide to you. And the output is only "yes" or "no" and nothing else. Just "yes" or "no" never maybe. You can do it.
+    It like classify text. yes or no. To the question: "Bạn có muốn chơi lại không nhỉ?". It mean: "Do you want to play again?". 
+    Here are some examples to the answer is yes:
+    "Có mình rất muốn chơi lại" ,
+    "Chắc chắn rồi mình rất muốn chơi lại",
+    "Mình cần",
+    "Chơi lại",
+    "chơi lại",
+    "Cần",
+    "Rất cần",
+    "Được rồi",
+    "Rất sẵn lòng",
+    "Ok",
+    "ok",
+    "mình phải phục thù",
+    "cần mình cần",
+    "có",
+    "tất nhiên rồi",
+    "Ok sao cũng được",
+    "Lại một lần nữa",
+    "lại nào",
+    "Vâng ạ",
+    "vâng rất sẵn lòng",
+    "vâng rất muốn chơi lại",
+    "Mình rất muốn nghe",
+
+    Here are some examples to the answer is no:
+    "Không",
+    "Mình không cần cho lắm",
+    "Mình không cần",
+    "Chắc là không đâu",
+    "Tạm biệt bạn",
+    "Mình nghỉ game",
+    "Không chơi nữa",
+    "No",
+    "Dừng cuộc chơi tại đây"
+
+    If you not sure then the answer is no.
+    remember only return yes or no and response in lowercase and without anyspace.
+    Now the sentence is: {sentence}
+
+"""
+
+
 
 prompt_knowmore = PromptTemplate(
     input_variables=["sentence"],
@@ -125,6 +171,11 @@ prompt_ready = PromptTemplate(
     template=template_knowmore,
 )
 
+
+prompt_playagain = PromptTemplate(
+    input_variables=["sentence"],
+    template=template_playagain,
+)
 
 chain_knowmore = LLMChain(llm=llm, prompt=prompt_knowmore)
 chain_ready = LLMChain(llm=llm, prompt=prompt_ready)
@@ -162,6 +213,15 @@ def speech2command_knowmore():
     
 
 def speech2command_ready():
+    sentence = speech2text()  # get the text from voice input
+    result = chain_ready.run(sentence)
+    print(result)
+    processed_result = process_result(result)
+    print(processed_result)
+    return processed_result
+    
+
+def speech2command_playagain():
     sentence = speech2text()  # get the text from voice input
     result = chain_ready.run(sentence)
     print(result)
