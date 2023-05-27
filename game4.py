@@ -6,7 +6,7 @@ import os
 import time
 
 from understandjson import load_json_file
-# from girlnlp import speech2command_knowmore 
+from girlnlp import speech2command_knowmore , speech2command_ready, speech2command_playagain
 from playsound import playsound
 import moviepy.editor
 
@@ -360,17 +360,22 @@ def check_winner():
 
         if pikachu.winner_banner_displayed or meowth.winner_banner_displayed:
             if not pikachu.sound_played and not meowth.sound_played:
-
+                k = 1500
+                if meowth.winner_banner_displayed:
+                    k = 1000
+                
                 victory_full_sound.play()
                 pikachu.sound_played = True
                 meowth.sound_played = True
                 battle_music.stop()  # Stop the background sound
-                pygame.time.set_timer(PLAY_AGAIN_EVENT, 1500)  # 1500 milliseconds = 1.5 seconds
+                pygame.time.set_timer(PLAY_AGAIN_EVENT, k)  # 1500 milliseconds = 1.5 seconds
 
 
         for event in pygame.event.get():
             if event.type == PLAY_AGAIN_EVENT:
-                playagain_scene(pikachu.hp > meowth.hp)
+                play_again = playagain_scene(pikachu.hp > meowth.hp)
+                if play_again == "yes":
+                    reset_game()
                 pygame.time.set_timer(PLAY_AGAIN_EVENT, 0)  # clear the timer
 
                 
@@ -613,7 +618,6 @@ def intro_scene():
         # Index of the character to display
         char_index = 0
 
-        waiting = True
         while waiting:
             current_time = pygame.time.get_ticks()
             if current_time - start_time >= text_delay:  # Time for the next character
@@ -639,31 +643,24 @@ def intro_scene():
 
             pygame.display.update()
 
-            # Event handling
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
-                    if event.key == pygame.K_RETURN:  # The key is the Enter key
-                        waiting = False
-
             # Stop when all characters have been displayed
             if char_index >= len(text):
                 break
     
 
+    
+    answer = "yes"
 
     def askquestion(sound, text, delay_per_char):
-        answer = "yes"
         text_generate(sound, text, delay_per_char )
         play_listen_sound()
-        # answer = speech2command_knowmore()
-        return answer
 
 
-    text_generate(katsumi_voice_intro, intro_text, delay_per_char_intro )
+    # text_generate(katsumi_voice_intro, intro_text, delay_per_char_intro )
     
-
-    # answer = speech2command_knowmore()
-    answer = "yes"
+    askquestion(katsumi_voice_intro, intro_text, delay_per_char_intro)
+    answer = speech2command_knowmore()
+    # answer = "yes"    
     if answer == "yes":
         text_generate(katsumi_voice_duoctroi, duocroi_text, delay_per_char_duocroi)
         transition_fade(screen, 'in', 2)
@@ -674,16 +671,28 @@ def intro_scene():
         # play_video('videos/guide.mp4')
 
         text_generate(katsumi_voice_radongiandungko, ratdongiandungko_text, delay_per_char_ratdongiandungko)
+        answer = speech2command_ready()
+        if answer == "yes":
+            #tot phai vay chu
+            # waiting = False
+            
+            pass
+        else:
+            #ke anh bat dau
+            # waiting = False
 
-
+           
+            pass
+            
 
         # add the video intro
         # guide()
 
     else:
         text_generate(katsumi_voice_vaogame, vaogame_text, delay_per_char_vaogame)
+        waiting = False
 
-
+     # battle_scene
 
     # text_generate(next_voice, next_text, next_delay)
 
@@ -707,6 +716,7 @@ def intro_scene():
 
 
 def playagain_scene(win):
+    playagain = "yes"
     # Size of the screen
     screen_width, screen_height = screen.get_size()
 
@@ -758,6 +768,8 @@ def playagain_scene(win):
     delay_per_char_choilaigameko = 3000 / len(choilaigameko_text) 
     delay_per_char_okbatdaulai = 2000 / len(okbatdaulai_text)
     delay_per_char_batdaulaicolen = 4000 / len(batdaulaicolen_text)
+    delay_per_char_hengaplai = 10000 / len(hengaplai_text)
+
 
 
     # Set volume
@@ -828,11 +840,6 @@ def playagain_scene(win):
 
             pygame.display.update()
 
-            # Event handling
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:  # Key down event (key is pressed)
-                    if event.key == pygame.K_RETURN:  # The key is the Enter key
-                        waiting = False
 
             # Stop when all characters have been displayed
             if char_index >= len(text):
@@ -841,35 +848,46 @@ def playagain_scene(win):
 
 
     def askquestion(sound, text, delay_per_char):
-        answer = "yes"
         text_generate(sound, text, delay_per_char )
         play_listen_sound()
-        # answer = speech2command_knowmore()
-        return answer
 
     if win == True:
-        again = askquestion(katsumi_voice_chucmungchoilaiko, chucmungchoilaiko_text, delay_per_char_chucmungchoilaiko)
+        askquestion(katsumi_voice_chucmungchoilaiko, chucmungchoilaiko_text, delay_per_char_chucmungchoilaiko)
+        play_listen_sound()
+        again = speech2command_playagain()
+
         if again == "yes":
             # ok bat dau lai
             text_generate(katsumi_voice_okbatdaulai, okbatdaulai_text, delay_per_char_okbatdaulai )
-            
+
             #choi lai
-            pass
+            # reset_game()
+            
         else:
             #ending scene
-            pass
+            text_generate(katsumi_voice_hengaplai, hengaplai_text, delay_per_char_hengaplai )
+            playagain = "no"
+
+
     else:
-        again = askquestion(katsumi_voice_choilaigameko, choilaigameko_text, delay_per_char_choilaigameko)
+        askquestion(katsumi_voice_choilaigameko, choilaigameko_text, delay_per_char_choilaigameko)
+        play_listen_sound()
+        again = speech2command_playagain()
+
+
         if again == "yes":
             # bat dau lai co len
             text_generate(katsumi_voice_batdaulaicolen, batdaulaicolen_text, delay_per_char_batdaulaicolen )
+            # reset_game()
 
             # choi lai
-            pass
         else:
             #ending scene
-            pass
-            
+            text_generate(katsumi_voice_hengaplai, hengaplai_text, delay_per_char_hengaplai )
+            playagain = "no"
+
+
+    waiting = False            
 
 
 
@@ -885,6 +903,7 @@ def playagain_scene(win):
 
     channel1.stop()
     channel2.stop()
+    return playagain
 
 
 
@@ -1040,7 +1059,6 @@ def battle_scene():
 
         draw_health_bars()
         check_winner()
-        # playagain_scene(pikachu.hp > meowth.hp)
 
 
         pygame.display.update()

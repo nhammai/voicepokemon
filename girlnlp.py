@@ -76,6 +76,7 @@ template_knowmore = """
     "Có mình cần bạn giới thiệu" ,
     "Chắc chắn rồi mình rất cần",
     "Mình cần",
+    "giới thiệu",
     "Cần",
     "Rất cần",
     "Được rồi",
@@ -132,6 +133,10 @@ template_playagain = """
     "ok",
     "mình phải phục thù",
     "cần mình cần",
+    "có mình muốn trở lại",
+    "có mình muốn chơi lại",
+    " có muốn trở lại",
+    " có mình muốn trở lại",
     "có",
     "tất nhiên rồi",
     "Ok sao cũng được",
@@ -151,9 +156,12 @@ template_playagain = """
     "Mình nghỉ game",
     "Không chơi nữa",
     "No",
-    "Dừng cuộc chơi tại đây"
+    "Dừng cuộc chơi tại đây",
+    
 
-    If you not sure then the answer is no.
+    If you not sure then the answer is "yes".
+    Whenever you see the keyword "có" in the sentence then it is "yes"
+
     remember only return yes or no and response in lowercase and without anyspace.
     Now the sentence is: {sentence}
 
