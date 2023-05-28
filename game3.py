@@ -176,8 +176,8 @@ def draw_button(screen, message, x, y, w, h, ic, ac, action=None):
 def reset_game():
     
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack
-    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
-    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
+    pikachu = Pokemon("Pikachu", pikachu_img, 42, 100, 100,20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
+    meowth = Pokemon("Meowth", meowth_img, 50,100,100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
     last_pikachu_attack = 0
@@ -186,7 +186,7 @@ def reset_game():
 
 
 class Pokemon:
-    def __init__(self, name, image, hp, attack_power, attack_name, attack_sound, animation_imgs, animation_x_offset, animation_y_offset):
+    def __init__(self, name, image, level, hp,max_hp, attack_power, attack_name, attack_sound, animation_imgs, animation_x_offset, animation_y_offset):
         self.name = name
         self.image = image
         self.hp = hp
@@ -206,6 +206,8 @@ class Pokemon:
         self.ko_displayed = False  # Add this line
         self.winner_banner_displayed = False  # Add this line
         self.sound_played = False  # Add this line
+        self.level = level
+        self.max_hp = max_hp
         
 
 
@@ -355,6 +357,65 @@ def check_winner():
                 battle_music.stop()  # Stop the background sound
 
 
+def draw_databox(pokemon, x, y):
+    # Two fonts are created here: one for the name and one for the other stats.
+    name_font = pygame.font.Font(None, 35)  # Larger size for name
+    level_font = pygame.font.Font(None, 30)  # Larger size for level
+    databox_font = pygame.font.Font(None, 24)  # Size for other data
+
+    # Load the correct databox image based on the Pokemon.
+    if pokemon.name == "Pikachu":
+        databox_img = pygame.image.load('databox_normal.png')
+        # Scale the image.
+        scaled_width = 320  # You can adjust this as needed.
+        scaled_height = (scaled_width*84)/260  # You can adjust this as needed.
+        databox_img = pygame.transform.scale(databox_img, (scaled_width, scaled_height))
+
+        # Set the text and health bar positions for Pikachu.
+        name_position = (x + 50, y + 15)
+        level_position = (x + 230, y + 20)
+        hp_position = (x + 190, y + 68)
+        health_bar_position = (x + 167, y + 51)
+    else:
+        databox_img = pygame.image.load('databox_normal_foe.png')
+                # Scale the image.
+        scaled_width = 320  # You can adjust this as needed.
+        scaled_height = (scaled_width*62)/260  # You can adjust this as needed.
+        databox_img = pygame.transform.scale(databox_img, (scaled_width, scaled_height))
+
+        # Set the text and health bar positions for Meowth.
+        name_position = (x + 10, y + 15)  # Adjust as needed.
+        level_position = (x + 210, y + 20)  # Adjust as needed.
+        hp_position = (x + 40, y + 50)  # Adjust as needed.
+        health_bar_position = (x + 145, y + 51)  # Adjust as needed.
+
+    # Get the width of the databox image.
+    databox_width = databox_img.get_rect().width
+
+    # Draw the box.
+    screen.blit(databox_img, (x, y))
+
+    # Draw the text.
+    name_text = name_font.render(f'{pokemon.name.upper()}', True, (98, 98, 99))  # Custom gray text, name is uppercase
+    level_text = level_font.render(f'Lv: {pokemon.level}', True, (98, 98, 99))  # Custom gray text
+    hp_text = databox_font.render(f'{pokemon.hp}/{pokemon.max_hp}', True, (98, 98, 99))  # Custom gray text
+
+    # Display the text inside the box.
+    screen.blit(name_text, name_position)
+    screen.blit(level_text, level_position)
+    if pokemon.name == "Pikachu":
+        screen.blit(hp_text, hp_position)
+    
+
+    # Draw the health bar.
+    health_ratio = pokemon.hp / pokemon.max_hp
+    health_bar_color = (88, 220, 139)  # Hex color #58dc8b
+    health_bar_width = int(120 * health_ratio)
+    pygame.draw.rect(screen, health_bar_color, pygame.Rect(*health_bar_position, health_bar_width, 6))
+
+    # Return the width of the databox.
+    return databox_width
+
 
 
 
@@ -389,8 +450,8 @@ last_pikachu_attack_time = 0
 def game_loop():
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack, last_pikachu_attack_time
 
-    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
-    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
+    pikachu = Pokemon("Pikachu", pikachu_img, 42,100,100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
+    meowth = Pokemon("Meowth", meowth_img, 50, 100,100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
     last_pikachu_attack = 0
@@ -403,6 +464,9 @@ def game_loop():
 
 
     while True:
+
+
+        
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -410,8 +474,8 @@ def game_loop():
 
             if event.type == KEYDOWN:
                 if event.key == K_a:  # Reset the game when 'A' is pressed
-                    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
-                    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
+                    pikachu = Pokemon("Pikachu", pikachu_img, 42, 100,100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
+                    meowth = Pokemon("Meowth", meowth_img, 50, 100,100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
                     player_turn = True
                     animation_playing = False
                     last_pikachu_attack = 0
@@ -545,8 +609,20 @@ def game_loop():
                     animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 2000)
                 elif (pikachu.attack_name == "Irontail"):
                     animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 1000)
+        # Get the screen width.
+        screen_width = screen.get_rect().width
 
-        draw_health_bars()
+        # Get the width of the databox image.
+        pikachu_databox_width = pygame.image.load('databox_normal.png').get_rect().width
+
+        # Calculate the positions.
+        pikachu_databox_x = screen_width - pikachu_databox_width
+        meowth_databox_x = 0
+
+        # Draw the data boxes at the correct positions.
+        draw_databox(pikachu,pikachu_databox_x - 60 , 350)
+        draw_databox(meowth, meowth_databox_x, 100)
+        # draw_health_bars()
         check_winner()
 
         pygame.display.update()
