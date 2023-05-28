@@ -379,9 +379,6 @@ def check_winner():
                 pygame.time.set_timer(PLAY_AGAIN_EVENT, 0)  # clear the timer
 
                 
-            
-
-
 
 
 # Guide

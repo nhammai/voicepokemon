@@ -356,6 +356,32 @@ def check_winner():
 
 
 
+
+
+
+
+def display_image_and_play_sound(image_path, sound_path, display_time):
+    # Load the image
+    image = pygame.image.load(image_path)
+
+    # Load the sound
+    sound = pygame.mixer.Sound(sound_path)
+
+    # Play the sound
+    sound.play()
+
+    # Display the image
+    screen.blit(image, (0, 0))
+
+    # Update the screen
+    pygame.display.flip()
+
+    # Wait for the specified amount of time
+    pygame.time.wait(display_time)
+
+
+
+
 # Main game loop
 last_pikachu_attack_time = 0
 
@@ -369,8 +395,12 @@ def game_loop():
     animation_playing = False
     last_pikachu_attack = 0
     battle_music.play(-1)
+    display_image_and_play_sound('pikachuvsmeowth.png', 'sounds/vs.wav', 4000)
+
     # meowth_attack_delay = random.randint(3000, 6000)  # 3 or 6 seconds in milliseconds
     timedelay = 0
+
+
 
     while True:
         for event in pygame.event.get():
