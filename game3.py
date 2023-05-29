@@ -441,6 +441,90 @@ def display_image_and_play_sound(image_path, sound_path, display_time):
     pygame.time.wait(display_time)
 
 
+def create_icon_with_border(icon_img, border_color, border_size):
+    # Create a new surface with a size larger than the icon by the border size.
+    border_img = pygame.Surface((icon_img.get_width() + border_size * 2, icon_img.get_height() + border_size * 2))
+
+    # Fill the new surface with the border color.
+    border_img.fill(border_color)
+
+    # Blit the icon onto the middle of the new surface.
+    border_img.blit(icon_img, (border_size, border_size))
+
+    return border_img
+
+
+def apply_glow_effect(icon_img):
+    # Create a white surface with the same size as the icon and with per-pixel alpha.
+    glow_img = pygame.Surface(icon_img.get_size(), pygame.SRCALPHA)
+
+    # Fill the surface with white and set the alpha value to create a semi-transparent overlay.
+    glow_img.fill((255, 255, 255, 128))  # RGBA color
+
+    # Blend the white overlay onto the icon image.
+    icon_img.blit(glow_img, (0, 0), special_flags=pygame.BLEND_RGBA_ADD)
+
+    return icon_img
+
+def draw_command_box():
+    # Load the command box image.
+    command_box_img = pygame.image.load('commandbox.png')
+
+    # Scale the image.
+    command_box_scaled_width = 405  # Adjust this to your desired size.
+    command_box_scaled_height = 180  # Adjust this to your desired size.
+    command_box_img = pygame.transform.scale(command_box_img, (command_box_scaled_width, command_box_scaled_height))
+
+    border_color = (0, 0, 0)  # The color of the border. Adjust this to your desired color.
+    border_size = 2  # The size of the border. Adjust this to your desired size.
+
+    # Load the command icons.
+    pikachu_icon_img = pygame.image.load('iconss/pikachu_icon.png')
+    thunder_icon_img = pygame.image.load('iconss/thunder_icon.png')
+    electricball_icon_img = pygame.image.load('iconss/electricball_icon.png')
+    irontail_icon_img = pygame.image.load('iconss/irontail_icon.png')
+
+    # Scale the icons.
+    icon_scaled_width = 60  # Adjust this to your desired size.
+    icon_scaled_height = 60  # Adjust this to your desired size.
+    pikachu_icon_img = pygame.transform.scale(pikachu_icon_img, (icon_scaled_width, icon_scaled_height))
+    thunder_icon_img = pygame.transform.scale(thunder_icon_img, (icon_scaled_width, icon_scaled_height))
+    electricball_icon_img = pygame.transform.scale(electricball_icon_img, (icon_scaled_width, icon_scaled_height))
+    irontail_icon_img = pygame.transform.scale(irontail_icon_img, (icon_scaled_width, icon_scaled_height))
+
+    # Add borders to the icons.
+    pikachu_icon_img = create_icon_with_border(pikachu_icon_img, border_color, border_size)
+    thunder_icon_img = create_icon_with_border(thunder_icon_img, border_color, border_size)
+    electricball_icon_img = create_icon_with_border(electricball_icon_img, border_color, border_size)
+    irontail_icon_img = create_icon_with_border(irontail_icon_img, border_color, border_size)
+
+    # Define the text.
+    font = pygame.font.Font(None, 30)  # Adjust the font size to fit your command box.
+    pikachu_text = font.render("Pikachu", True, (255, 255, 255))
+    thunder_text = font.render("Phóng điện", True, (255, 255, 255))
+    electricball_text = font.render("Quả cầu điện", True, (255, 255, 255))
+    irontail_text = font.render("Đuôi thép", True, (255, 255, 255))
+    instruction_text = font.render("Đọc to Pikachu để kích hoạt và ra lệnh", True, (255, 255, 255))
+
+    # Draw the command box.
+    command_box_position = (402, 425)  # Bottom-right position, adjust this to fit
+    # Bottom-right position, adjust this to fit your screen.
+    screen.blit(command_box_img, command_box_position)
+
+    # Draw the icons and corresponding text.
+    icon_positions = [(430, 500), (520, 500), (610, 500), (700, 500)]  # Adjust these positions according to your desired layout.
+    text_positions = [(430, 570), (500, 570), (600, 570), (700, 570)]  # Adjust these positions according to your desired layout.
+    icons = [pikachu_icon_img, thunder_icon_img, electricball_icon_img, irontail_icon_img]
+    texts = [pikachu_text, thunder_text, electricball_text, irontail_text]
+    for icon_position, text_position, icon, text in zip(icon_positions, text_positions, icons, texts):
+        screen.blit(icon, icon_position)
+        screen.blit(text, text_position)
+
+    # Draw the instruction text.
+    instruction_text_position = (430, 470)  # Adjust this position to fit your desired layout.
+    screen.blit(instruction_text, instruction_text_position)
+
+
 
 
 # Main game loop
@@ -456,7 +540,7 @@ def game_loop():
     animation_playing = False
     last_pikachu_attack = 0
     battle_music.play(-1)
-    display_image_and_play_sound('pikachuvsmeowth.png', 'sounds/vs.wav', 4000)
+    # display_image_and_play_sound('pikachuvsmeowth.png', 'sounds/vs.wav', 4000)
 
     # meowth_attack_delay = random.randint(3000, 6000)  # 3 or 6 seconds in milliseconds
     timedelay = 0
@@ -622,6 +706,7 @@ def game_loop():
         # Draw the data boxes at the correct positions.
         draw_databox(pikachu,pikachu_databox_x - 60 , 350)
         draw_databox(meowth, meowth_databox_x, 100)
+        draw_command_box()
         # draw_health_bars()
         check_winner()
 
