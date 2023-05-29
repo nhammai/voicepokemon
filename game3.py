@@ -516,7 +516,7 @@ def draw_command_box():
     # thunder_text = render_bold_text(font, "PHÓNG ĐIỆN", text_color)
     # electricball_text = render_bold_text(font, "QUẢ CẦU ĐIỆN", text_color)
     # irontail_text = render_bold_text(font, "ĐUÔI THÉP", text_color)
-    instruction_text = render_bold_text(font_instruction, "Hô to Pikachu và ra lệnh", text_color)
+    instruction_text = render_bold_text(font_instruction, "Hô to Pikachu và ra lệnh:", text_color)
     # Draw the command box.
     command_box_position = (402, 425)  # Bottom-right position, adjust this to fit
     # Bottom-right position, adjust this to fit your screen.
