@@ -409,7 +409,12 @@ def draw_databox(pokemon, x, y):
 
     # Draw the health bar.
     health_ratio = pokemon.hp / pokemon.max_hp
-    health_bar_color = (88, 220, 139)  # Hex color #58dc8b
+    if health_ratio <= 0.3:  # Less than 30%
+        health_bar_color = (248, 89, 41)  # Hex color #f85929
+    elif health_ratio <= 0.7:  # Less than 70%
+        health_bar_color = (249, 177, 0)  # Hex color #f9b100
+    else:
+        health_bar_color = (88, 220, 139)  # Hex color #58dc8b
     health_bar_width = int(120 * health_ratio)
     pygame.draw.rect(screen, health_bar_color, pygame.Rect(*health_bar_position, health_bar_width, 6))
 
