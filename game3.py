@@ -549,6 +549,8 @@ last_pikachu_attack_time = 0
 
 
 def game_loop():
+    command_box_visible = True
+
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack, last_pikachu_attack_time
 
     pikachu = Pokemon("Pikachu", pikachu_img, 42,100,100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
@@ -581,6 +583,9 @@ def game_loop():
                     animation_playing = False
                     last_pikachu_attack = 0
                     battle_music.play(-1)
+                if event.key == K_w:  # Toggle the command box when 'W' is pressed
+                    command_box_visible = not command_box_visible
+
 
                 if event.key == K_SPACE and not animation_playing and player_turn:
                     # cm = read_command("command.txt") ## read the amount to modify power
@@ -724,7 +729,8 @@ def game_loop():
         if not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):
             draw_databox(pikachu,pikachu_databox_x - 60 , 350)
             draw_databox(meowth, meowth_databox_x, 100)
-            draw_command_box()
+            if command_box_visible:
+                draw_command_box()
 
 
         # draw_health_bars()
