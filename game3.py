@@ -721,9 +721,12 @@ def game_loop():
         meowth_databox_x = 0
 
         # Draw the data boxes at the correct positions.
-        draw_databox(pikachu,pikachu_databox_x - 60 , 350)
-        draw_databox(meowth, meowth_databox_x, 100)
-        draw_command_box()
+        if not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):
+            draw_databox(pikachu,pikachu_databox_x - 60 , 350)
+            draw_databox(meowth, meowth_databox_x, 100)
+            draw_command_box()
+
+
         # draw_health_bars()
         check_winner()
 
