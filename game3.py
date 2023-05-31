@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Pokemon Battle: Pikachu vs Meowth")
 
 # Load and scale images
-bg_img = pygame.image.load("bg_img2.png")
+bg_img = pygame.image.load("bg_img4.png")
 bg_img = pygame.transform.scale(bg_img, (width, height))
 
 pikachu_img = pygame.image.load("pikachu_img.png")
