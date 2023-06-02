@@ -500,6 +500,10 @@ def intro_scene():
     vaogame_text = "Tốt chúng ta sẽ bắt đầu với trận đấu đầu tiên với con mèo của đội hoả tiễn. Chúc bạn may mắn nhé!"
     ratdongiandungko_text  = "Rất đơn giản đúng không. Bạn chỉ cần đọc to pikachu và đọc to chiêu thức lên là xong. Vậy bạn đã sẵn sàng chưa nào?"
 
+
+    totphaivaychu = "Tốt. Chồng em phải vậy chứ. Chúng ta sẽ bắt đầu với trận đấu đầu tiên với một nhân vật hết sức khốn nạn hồi nhỏ. Gút lấc!"
+    keban = "Chưa sẵn sàng thì kệ bạn. Cứ chơi đi rồi sẽ biết. Nào chúng ta bắt đầu trận đấu giữa pikachu và một nhân vật hết sức quen thuộc. Lét gâu !!"
+
     
 
 
