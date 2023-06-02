@@ -755,7 +755,6 @@ def game_loop():
 
 
 
-
         # draw_health_bars()
         check_winner()
 

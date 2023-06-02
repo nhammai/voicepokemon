@@ -44,6 +44,13 @@ pikachuko_img = pygame.transform.scale(pikachuko_img, (250, 141))
 meowth_win_img = pygame.image.load("meowth_win.png")
 meowth_win_img = pygame.transform.scale(meowth_win_img, (250, 250))
 
+# Load the image
+icon = pygame.image.load('pikachuvsmeowth.png')
+
+# Set the icon
+pygame.display.set_icon(icon)
+
+
 
 # Load sounds
 battle_music = pygame.mixer.Sound("./sounds/battle_music.mp3")
