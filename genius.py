@@ -1,0 +1,1 @@
+print("You're a genius")
