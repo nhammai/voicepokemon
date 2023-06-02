@@ -424,8 +424,6 @@ def draw_databox(pokemon, x, y):
 
 
 
-
-
 def display_image_and_play_sound(image_path, sound_path, display_time):
     # Load the image
     image = pygame.image.load(image_path)
@@ -541,7 +539,12 @@ def draw_command_box():
     instruction_text_position = (465, 445)  # Adjust this position to fit your desired layout.
     screen.blit(instruction_text, instruction_text_position)
 
-
+def draw_timer(screen, time, max_time, x, y, width, height, color):
+    fill = (time / max_time) * width
+    outline_rect = pygame.Rect(x, y, width, height)
+    fill_rect = pygame.Rect(x, y, fill, height)
+    pygame.draw.rect(screen, color, fill_rect)
+    pygame.draw.rect(screen, (0,0,0), outline_rect, 2)
 
 
 # Main game loop
@@ -559,14 +562,23 @@ def game_loop():
     animation_playing = False
     last_pikachu_attack = 0
     battle_music.play(-1)
-    display_image_and_play_sound('pikachuvsmeowth.png', 'sounds/vs.wav', 4000)
+    # display_image_and_play_sound('pikachuvsmeowth.png', 'sounds/vs.wav', 4000)
 
     # meowth_attack_delay = random.randint(3000, 6000)  # 3 or 6 seconds in milliseconds
     timedelay = 0
-
+    pikachu_turn_time = 15000  # Initialize pikachu's turn time
 
 
     while True:
+        dt = clock.tick(FPS)  # Calculate the time passed since the last frame
+        if player_turn and not pikachu.defeated:
+            pikachu_turn_time -= dt  # Decrement pikachu's turn time by the elapsed time
+
+            if pikachu_turn_time <= 0:
+                pikachu_turn_time = 15000  # Reset the timer for next Pikachu's turn
+                player_turn = False
+        else:
+            pikachu_turn_time = 15000  
 
 
         
@@ -676,9 +688,10 @@ def game_loop():
             # pikachu.attacked_time = pygame.time.get_ticks()
             # animation_playing = True
             # player_turn = not player_turn
-            if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack_time >= timedelay:
+            if not player_turn and not animation_playing and not meowth.defeated and not pikachu.defeated and current_time - last_pikachu_attack_time >= timedelay:
                 # Meowth's attack code here
                 meowth.attack(pikachu)
+                pikachu_turn_time = 15000
                 pikachu.attacked_time = pygame.time.get_ticks()
                 animation_playing = True
                 player_turn = not player_turn
@@ -729,8 +742,18 @@ def game_loop():
         if not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):
             draw_databox(pikachu,pikachu_databox_x - 60 , 350)
             draw_databox(meowth, meowth_databox_x, 100)
-            if command_box_visible:
-                draw_command_box()
+            # if command_box_visible:
+            #     draw_command_box()
+        
+        if player_turn and not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):
+            # Draw the timer bar at bottom right
+            # Adjust the x, y parameters to change the position of the bar.
+            # Adjust the width, height parameters to change the size of the bar.
+            # Here, x = SCREEN_WIDTH - 210, y = SCREEN_HEIGHT - 30, width = 200, height = 20
+            draw_timer(screen, pikachu_turn_time, 15000, screen.get_width() - 270, screen.get_height() - 160, 240, 10, (255, 255, 0))
+
+
+
 
 
         # draw_health_bars()
