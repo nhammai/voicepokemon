@@ -1,5 +1,5 @@
 # NLPoké Adventure
-Get ready for NLPoké Adventure, the coolest Pokémon game where you can control battles with your voice! 
+Experience NLPoké Adventure, the coolest Pokémon game where you control battles with your voice!
 
 Talk to your Pokémon and show off your skills as you guide them through awesome challenges. 
 
