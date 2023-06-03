@@ -844,8 +844,8 @@ def playagain_scene(win):
     if win == True:
         askquestion(katsumi_voice_chucmungchoilaiko, chucmungchoilaiko_text, delay_per_char_chucmungchoilaiko)
         play_listen_sound()
-        again = speech2command_playagain()
-
+        # again = speech2command_playagain()
+        again = "no"
         if again == "yes":
             # ok bat dau lai
             text_generate(katsumi_voice_okbatdaulai, okbatdaulai_text, delay_per_char_okbatdaulai )
@@ -862,8 +862,8 @@ def playagain_scene(win):
     else:
         askquestion(katsumi_voice_choilaigameko, choilaigameko_text, delay_per_char_choilaigameko)
         play_listen_sound()
-        again = speech2command_playagain()
-
+        # again = speech2command_playagain()
+        again = "no"
 
         if again == "yes":
             # bat dau lai co len
