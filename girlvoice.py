@@ -839,11 +839,11 @@ def playagain_scene(win):
 
     def askquestion(sound, text, delay_per_char):
         text_generate(sound, text, delay_per_char )
-        play_listen_sound()
+        # play_listen_sound()
 
     if win == True:
         askquestion(katsumi_voice_chucmungchoilaiko, chucmungchoilaiko_text, delay_per_char_chucmungchoilaiko)
-        play_listen_sound()
+        # play_listen_sound()
         # again = speech2command_playagain()
         again = "no"
         if again == "yes":
@@ -1057,12 +1057,106 @@ def battle_scene():
 
 
 
+# Set up the display
+screen_width, screen_height = 800, 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+clock = pygame.time.Clock()
+FPS = 300
+
+# Define constants for fade-in/out effect
+FADE_DURATION = 2500  # Time duration for fade effect in milliseconds
+FADE_INCREMENT = 300  # Alpha increment value for fade effect
+
+
+def display_image_with_fade(image):
+    alpha = 0  # Initial alpha value
+    image_rect = image.get_rect(center=(screen_width // 2, screen_height // 2))
+
+    fade_in = True  # Flag to control fade-in/fade-out effect
+    fade_start_time = pygame.time.get_ticks()  # Start time of fade effect
+
+    while True:
+        dt = clock.tick(FPS) / 1000  # Time passed since last frame in seconds
+        screen.fill((0, 0, 0))  # Clear the screen
+
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        if fade_in:
+            # Fade-in effect
+            alpha += int(FADE_INCREMENT * dt)
+            if alpha >= 255:
+                alpha = 255
+                fade_in = False  # Switch to fade-out effect
+
+            image.set_alpha(alpha)
+        else:
+            # Fade-out effect
+            alpha -= int(FADE_INCREMENT * dt)
+            if alpha <= 0:
+                alpha = 0
+                break  # Exit the loop once the image is fully faded out
+
+            image.set_alpha(alpha)
+
+        screen.blit(image, image_rect)  # Draw the image on the screen
+        pygame.display.flip()
+
+    pygame.time.wait(1000)  # Pause for 1 second after each image
+
+
+def play_credit_scene():
+    # Load the images and sound
+    credit_folder = 'credit'
+    credit_images = []
+    for file in os.listdir(credit_folder):
+        if file.endswith('.png'):
+            image_path = os.path.join(credit_folder, file)
+            image = pygame.image.load(image_path).convert_alpha()
+            credit_images.append(image)
+
+    ending_sound = pygame.mixer.Sound('sounds/ending.wav')
+
+    # Play the ending sound
+    ending_sound.play()
+
+    # Display the credit images with fade-in/fade-out effect
+    for credit_image in credit_images:
+        display_image_with_fade(credit_image)
+
+    
 
 
 
 def main():
-    intro_scene()  # Play the intro scene first
-    battle_scene()  # Then transition to the main game
+    # Initialize Pygame and create the display window
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    # pygame.display.set_caption("Credit Scene")
+
+    # Play the intro scene first
+    intro_scene()
+
+    # Transition to the main game (battle scene)
+    battle_scene()
+
+    # Play the credit scene
+    play_credit_scene()
+
+    # Quit the game
+    pygame.quit()
+
+
+
+
+
+# def main():
+#     intro_scene()  # Play the intro scene first
+#     battle_scene()  # Then transition to the main game
+    
     
 
 if __name__ == "__main__":
