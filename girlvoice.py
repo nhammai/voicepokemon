@@ -24,7 +24,7 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Pokemon Battle: Pikachu and The Multiverse")
 
 # Load and scale images
-bg_img = pygame.image.load("bg_img.png")
+bg_img = pygame.image.load("bg_img4.png")
 bg_img = pygame.transform.scale(bg_img, (width, height))
 
 pikachu_img = pygame.image.load("pikachu_img.png")
@@ -180,8 +180,8 @@ def draw_button(screen, message, x, y, w, h, ic, ac, action=None):
 def reset_game():
     
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack
-    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
-    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
+    pikachu = Pokemon("Pikachu", pikachu_img, 42,100,100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
+    meowth = Pokemon("Meowth", meowth_img, 50, 100,100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
     last_pikachu_attack = 0
@@ -190,7 +190,7 @@ def reset_game():
 
 
 class Pokemon:
-    def __init__(self, name, image, hp, attack_power, attack_name, attack_sound, animation_imgs, animation_x_offset, animation_y_offset):
+    def __init__(self, name, image, level, hp,max_hp, attack_power, attack_name, attack_sound, animation_imgs, animation_x_offset, animation_y_offset):
         self.name = name
         self.image = image
         self.hp = hp
@@ -210,6 +210,8 @@ class Pokemon:
         self.ko_displayed = False  # Add this line
         self.winner_banner_displayed = False  # Add this line
         self.sound_played = False  # Add this line
+        self.level = level
+        self.max_hp = max_hp
         
 
 
@@ -896,7 +898,77 @@ def playagain_scene(win):
     return playagain
 
 
+def draw_databox(pokemon, x, y):
+    # Two fonts are created here: one for the name and one for the other stats.
+    name_font = pygame.font.Font(None, 35)  # Larger size for name
+    level_font = pygame.font.Font(None, 30)  # Larger size for level
+    databox_font = pygame.font.Font(None, 24)  # Size for other data
 
+    # Load the correct databox image based on the Pokemon.
+    if pokemon.name == "Pikachu":
+        databox_img = pygame.image.load('databox_normal.png')
+        # Scale the image.
+        scaled_width = 320  # You can adjust this as needed.
+        scaled_height = (scaled_width*84)/260  # You can adjust this as needed.
+        databox_img = pygame.transform.scale(databox_img, (scaled_width, scaled_height))
+
+        # Set the text and health bar positions for Pikachu.
+        name_position = (x + 50, y + 15)
+        level_position = (x + 230, y + 20)
+        hp_position = (x + 190, y + 68)
+        health_bar_position = (x + 167, y + 51)
+    else:
+        databox_img = pygame.image.load('databox_normal_foe.png')
+                # Scale the image.
+        scaled_width = 320  # You can adjust this as needed.
+        scaled_height = (scaled_width*62)/260  # You can adjust this as needed.
+        databox_img = pygame.transform.scale(databox_img, (scaled_width, scaled_height))
+
+        # Set the text and health bar positions for Meowth.
+        name_position = (x + 10, y + 15)  # Adjust as needed.
+        level_position = (x + 210, y + 20)  # Adjust as needed.
+        hp_position = (x + 40, y + 50)  # Adjust as needed.
+        health_bar_position = (x + 145, y + 51)  # Adjust as needed.
+
+    # Get the width of the databox image.
+    databox_width = databox_img.get_rect().width
+
+    # Draw the box.
+    screen.blit(databox_img, (x, y))
+
+    # Draw the text.
+    name_text = name_font.render(f'{pokemon.name.upper()}', True, (98, 98, 99))  # Custom gray text, name is uppercase
+    level_text = level_font.render(f'Lv: {pokemon.level}', True, (98, 98, 99))  # Custom gray text
+    hp_text = databox_font.render(f'{pokemon.hp}/{pokemon.max_hp}', True, (98, 98, 99))  # Custom gray text
+
+    # Display the text inside the box.
+    screen.blit(name_text, name_position)
+    screen.blit(level_text, level_position)
+    if pokemon.name == "Pikachu":
+        screen.blit(hp_text, hp_position)
+    
+
+    # Draw the health bar.
+    health_ratio = pokemon.hp / pokemon.max_hp
+    if health_ratio <= 0.3:  # Less than 30%
+        health_bar_color = (248, 89, 41)  # Hex color #f85929
+    elif health_ratio <= 0.7:  # Less than 70%
+        health_bar_color = (249, 177, 0)  # Hex color #f9b100
+    else:
+        health_bar_color = (88, 220, 139)  # Hex color #58dc8b
+    health_bar_width = int(120 * health_ratio)
+    pygame.draw.rect(screen, health_bar_color, pygame.Rect(*health_bar_position, health_bar_width, 6))
+
+    # Return the width of the databox.
+    return databox_width
+
+
+def draw_timer(screen, time, max_time, x, y, width, height, color):
+    fill = (time / max_time) * width
+    outline_rect = pygame.Rect(x, y, width, height)
+    fill_rect = pygame.Rect(x, y, fill, height)
+    pygame.draw.rect(screen, color, fill_rect)
+    pygame.draw.rect(screen, (0,0,0), outline_rect, 2)
 
 
 # Main game loop
@@ -904,16 +976,29 @@ last_pikachu_attack_time = 0
 def battle_scene():
     global pikachu, meowth, player_turn, animation_playing, last_pikachu_attack, last_pikachu_attack_time
 
-    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
-    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
+    pikachu = Pokemon("Pikachu", pikachu_img, 42,100,100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
+    meowth = Pokemon("Meowth", meowth_img, 50, 100,100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
     player_turn = True
     animation_playing = False
     last_pikachu_attack = 0
     battle_music.play(-1)
     # meowth_attack_delay = random.randint(3000, 6000)  # 3 or 6 seconds in milliseconds
     timedelay = 0
+    pikachu_turn_time = 15000
 
     while True:
+
+        dt = clock.tick(FPS)  # Calculate the time passed since the last frame
+        if player_turn and not pikachu.defeated:
+            pikachu_turn_time -= dt  # Decrement pikachu's turn time by the elapsed time
+
+            if pikachu_turn_time <= 0:
+                pikachu_turn_time = 15000  # Reset the timer for next Pikachu's turn
+                player_turn = False
+        else:
+            pikachu_turn_time = 15000  
+
+            
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -921,8 +1006,8 @@ def battle_scene():
 
             if event.type == KEYDOWN:
                 if event.key == K_a:  # Reset the game when 'A' is pressed
-                    pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
-                    meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
+                    pikachu = Pokemon("Pikachu", pikachu_img, 42,100,100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
+                    meowth = Pokemon("Meowth", meowth_img, 50, 100,100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
                     player_turn = True
                     animation_playing = False
                     last_pikachu_attack = 0
@@ -1007,9 +1092,10 @@ def battle_scene():
             # pikachu.attacked_time = pygame.time.get_ticks()
             # animation_playing = True
             # player_turn = not player_turn
-            if not player_turn and not animation_playing and not meowth.defeated and current_time - last_pikachu_attack_time >= timedelay:
+            if not player_turn and not animation_playing and not meowth.defeated and not pikachu.defeated and current_time - last_pikachu_attack_time >= timedelay:
                 # Meowth's attack code here
                 meowth.attack(pikachu)
+                pikachu_turn_time = 15000
                 pikachu.attacked_time = pygame.time.get_ticks()
                 animation_playing = True
                 player_turn = not player_turn
@@ -1046,8 +1132,30 @@ def battle_scene():
                     animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 2000)
                 elif (pikachu.attack_name == "Irontail"):
                     animation_playing = not pikachu.play_animation(screen,desired_x_meo, desired_y_meo , 1000)
+        
 
-        draw_health_bars()
+
+                # Get the screen width.
+        screen_width = screen.get_rect().width
+
+        pikachu_databox_width = pygame.image.load('databox_normal.png').get_rect().width
+        
+        pikachu_databox_x = screen_width - pikachu_databox_width
+        meowth_databox_x = 0
+
+        if not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):
+            draw_databox(pikachu,pikachu_databox_x - 60 , 350)
+            draw_databox(meowth, meowth_databox_x, 100)
+
+        if player_turn and not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):
+            # Draw the timer bar at bottom right
+            # Adjust the x, y parameters to change the position of the bar.
+            # Adjust the width, height parameters to change the size of the bar.
+            # Here, x = SCREEN_WIDTH - 210, y = SCREEN_HEIGHT - 30, width = 200, height = 20
+            draw_timer(screen, pikachu_turn_time, 15000, screen.get_width() - 270, screen.get_height() - 160, 240, 10, (255, 255, 0))
+
+
+        # draw_health_bars()
         check_winner()
 
 
@@ -1138,13 +1246,13 @@ def main():
     # pygame.display.set_caption("Credit Scene")
 
     # Play the intro scene first
-    intro_scene()
+    # intro_scene()
 
     # Transition to the main game (battle scene)
     battle_scene()
 
     # Play the credit scene
-    play_credit_scene()
+    # play_credit_scene()
 
     # Quit the game
     pygame.quit()
