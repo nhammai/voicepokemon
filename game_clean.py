@@ -6,7 +6,6 @@ import os
 
 from understandjson import load_json_file
 # from girlnlp import speech2command_knowmore , speech2command_ready, speech2command_playagain
-import moviepy.editor
 
 pygame.init()
 
@@ -294,16 +293,6 @@ def check_winner():
                 pygame.time.set_timer(PLAY_AGAIN_EVENT, 0)  # clear the timer
 
                 
-
-
-# Guide
-
-def play_video(screen, path):
-    screen_width, screen_height = screen.get_size() # Get screen dimensions
-    clip = moviepy.editor.VideoFileClip(path)
-    clip = clip.resize(height=screen_height, width=screen_width) # Fit video to screen size
-    clip.preview()
-    pygame.display.set_mode((screen_width, screen_height)) # Recreate the pygame window
 
 
 

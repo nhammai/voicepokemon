@@ -1,3 +1,0 @@
-Command: thunder
-
-Amount: 1000000
