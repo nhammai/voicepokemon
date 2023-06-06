@@ -3,11 +3,9 @@ from pygame.locals import *
 import sys
 import random
 import os
-import time
 
 from understandjson import load_json_file
 # from girlnlp import speech2command_knowmore , speech2command_ready, speech2command_playagain
-from playsound import playsound
 import moviepy.editor
 
 pygame.init()
@@ -32,7 +30,6 @@ pikachu_img = pygame.transform.scale(pikachu_img, (200, 200))
 
 meowth_img = pygame.image.load("meowth_img.png")
 meowth_img = pygame.transform.scale(meowth_img, (250, 250))
-
 
 meowthko_img = pygame.image.load("meowthko_img.png")
 meowthko_img = pygame.transform.scale(meowthko_img, (250, 250))
@@ -133,49 +130,6 @@ meo_options = ["scratch", "scratch", "scratch", "bite", "bite", "bomb", "bomb"]
 def meo_auto(options):
     return random.choice(options)
 
-# choice = meo_auto(meo_options)
-# if choice == "scratch":
-# elif choice == "bite":
-# elif choice == "bomb":
-
-# add play again button
-
-def text_objects(text, font):
-    textSurface = font.render(text, True, (0, 0, 0))
-    return textSurface, textSurface.get_rect()
-
-
-def draw_button(screen, message, x, y, w, h, ic, ac, action=None):
-    # ic is the inactive color (when the mouse is not hovering over it)
-    # ac is the active color (when the mouse is hovering over it)
-    
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-
-    # Increase the button size
-    w += 20  # Increase the width
-    h += 10  # Increase the height
-
-    # Draw button with rounded corners
-    rect = pygame.Rect(x, y, w, h)
-    alpha = 0  # This makes corners invisible
-
-    # Draw the rectangles that will be used for creating rounded corners
-    pygame.draw.rect(screen, (0, 0, 0, alpha), rect, border_radius=25)
-    pygame.draw.rect(screen, ic, rect.inflate(-4, -4), border_radius=25)
-
-    if x + w > mouse[0] > x and y + h > mouse[1] > y:
-        pygame.draw.rect(screen, (0, 0, 0, alpha), rect, border_radius=25)
-        pygame.draw.rect(screen, ac, rect.inflate(-4, -4), border_radius=25)
-        if click[0] == 1 and action != None:
-            action()   
-
-    # Increase the text size
-    smallText = pygame.font.Font(None, 25)
-    textSurf, textRect = text_objects(message, smallText)
-    textRect.center = ((x + (w / 2)), (y + (h / 2)))
-    screen.blit(textSurf, textRect)
-
 
 def reset_game():
     
@@ -237,16 +191,11 @@ class Pokemon:
                 return True
         return False
 
-# Set animation offsets (change these values to adjust the animation positions)
-# pikachu_animation_offset_x = 50
-# pikachu_animation_offset_y = -20
 
 scratch_animation_offset_x = 100
 scratch_animation_offset_y = 100
 
 
-# pikachu = Pokemon("Pikachu", pikachu_img, 100, 20, "Thunderbolt", thunder_attack_sound, thunder_imgs, thunder_animation_offset_x, thunder_animation_offset_y)
-# meowth = Pokemon("Meowth", meowth_img, 100, 15, "Scratch", scratch_attack_sound, scratch_imgs, scratch_animation_offset_x, scratch_animation_offset_y)
 
 # Desired position for Pikachu
 desired_x_pika = 115
@@ -263,35 +212,7 @@ desired_y_meo = 150
 clock = pygame.time.Clock()
 FPS = 60
 player_turn = True
-# battle_music.play(-1)
 
-# Function to draw the health bars
-def draw_health_bars():
-    if not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):  # Update this line
-
-        hp_bar_width = 200
-        hp_bar_height = 15
-
-        # Position for Pikachu's HP bar
-        pikachu_hp_bar_x = width * 0.20
-        pikachu_hp_bar_y = height * 0.65
-
-        # Position for Meowth's HP bar
-        meowth_hp_bar_x = width * 0.70
-        meowth_hp_bar_y = height * 0.28
-
-        # Background
-        pygame.draw.rect(screen, (255, 0, 0), (pikachu_hp_bar_x, pikachu_hp_bar_y, hp_bar_width, hp_bar_height))
-        pygame.draw.rect(screen, (255, 0, 0), (meowth_hp_bar_x, meowth_hp_bar_y, hp_bar_width, hp_bar_height))
-
-        # Health
-        pygame.draw.rect(screen, (0, 0, 255), (pikachu_hp_bar_x, pikachu_hp_bar_y, pikachu.hp * hp_bar_width // 100, hp_bar_height))
-        pygame.draw.rect(screen, (0, 0, 255), (meowth_hp_bar_x, meowth_hp_bar_y, meowth.hp * hp_bar_width // 100, hp_bar_height))
-        # HP labels
-        font = pygame.font.Font(None, 24)
-        hp_label = font.render("HP", True, (255, 255, 255))
-        screen.blit(hp_label, (pikachu_hp_bar_x - 30, pikachu_hp_bar_y + 5))
-        screen.blit(hp_label, (meowth_hp_bar_x - hp_label.get_width() - 10, meowth_hp_bar_y + 5))
 
 # Function to check the winner and display the result
 def check_winner():
@@ -325,15 +246,7 @@ def check_winner():
 
             elif meowth.hp > pikachu.hp:
                 meowth.image = meowth_win_img
-            
 
-
-            # font = pygame.font.Font(None, 72)
-            # winner = "Pikachu" if pikachu.hp > meowth.hp else "Meowth"
-            # text = font.render(f"{winner} wins!", True, (255, 255, 255))
-            # text_rect = text.get_rect(center=(width // 2, int(height * 0.1)))
-
-            # screen.blit(text, text_rect)
             # draw_button(screen, "Play Again", 350, 450, 100, 50, (0, 200, 0), (0, 255, 0), reset_game)
             winner = "Pikachu" if pikachu.hp > meowth.hp else "Meowth"
 
@@ -351,7 +264,7 @@ def check_winner():
             screen.blit(shadow_text, shadow_pos)
             screen.blit(text, text_rect)
 
-            # draw_button(screen, "Play Again", 350, 450, 100, 50, (0, 200, 0), (0, 255, 0), reset_game)
+            
 
            
 
@@ -392,33 +305,6 @@ def play_video(screen, path):
     clip.preview()
     pygame.display.set_mode((screen_width, screen_height)) # Recreate the pygame window
 
-# from pyvidplayer import Video
-
-# vid = Video("videos/guide.mp4")
-# vid.set_size((800, 600))
-
-# def guide():
-#     while True:
-#         vid.draw(screen, (0, 0))
-#         pygame.display.update()
-#         for event in pygame.event.get():
-#             if event.type == pygame.MOUSEBUTTONDOWN:
-#                 vid.close()
-#                 # battle_scene()
-
-
-
-
-# Play the video
-# play_video('videos/guide.mp4')
-
-
-
-
-
-
-
-
 
 
 # Transition
@@ -444,11 +330,6 @@ def transition_fade(screen, type='in', speed=1):
 
 
 
-
-
-# Intro game
-
-    
 
 
 
@@ -982,7 +863,6 @@ def battle_scene():
     animation_playing = False
     last_pikachu_attack = 0
     battle_music.play(-1)
-    # meowth_attack_delay = random.randint(3000, 6000)  # 3 or 6 seconds in milliseconds
     timedelay = 0
     pikachu_turn_time = 15000
 
@@ -1087,11 +967,6 @@ def battle_scene():
                 meowth.animation_y_offset = bomb_animation_offset_y
             
 
-
-            # meowth.attack(pikachu)
-            # pikachu.attacked_time = pygame.time.get_ticks()
-            # animation_playing = True
-            # player_turn = not player_turn
             if not player_turn and not animation_playing and not meowth.defeated and not pikachu.defeated and current_time - last_pikachu_attack_time >= timedelay:
                 # Meowth's attack code here
                 meowth.attack(pikachu)
@@ -1148,10 +1023,6 @@ def battle_scene():
             draw_databox(meowth, meowth_databox_x, 100)
 
         if player_turn and not (pikachu.winner_banner_displayed or meowth.winner_banner_displayed):
-            # Draw the timer bar at bottom right
-            # Adjust the x, y parameters to change the position of the bar.
-            # Adjust the width, height parameters to change the size of the bar.
-            # Here, x = SCREEN_WIDTH - 210, y = SCREEN_HEIGHT - 30, width = 200, height = 20
             draw_timer(screen, pikachu_turn_time, 15000, screen.get_width() - 270, screen.get_height() - 160, 240, 10, (255, 255, 0))
 
 
@@ -1242,9 +1113,6 @@ def play_credit_scene():
 def main():
     # Initialize Pygame and create the display window
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    # pygame.display.set_caption("Credit Scene")
-
     # Play the intro scene first
     # intro_scene()
 
@@ -1257,15 +1125,6 @@ def main():
     # Quit the game
     pygame.quit()
 
-
-
-
-
-# def main():
-#     intro_scene()  # Play the intro scene first
-#     battle_scene()  # Then transition to the main game
     
-    
-
 if __name__ == "__main__":
     main()
