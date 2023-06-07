@@ -36,8 +36,8 @@ meowthko_img = pygame.transform.scale(meowthko_img, (250, 250))
 ko_img = pygame.image.load("KO.png")
 ko_img = pygame.transform.scale(ko_img, (250, 125))  # Adjust the size as needed
 
-pikachu_front_img = pygame.image.load("pikachu_front_img.png")
-pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
+pikachu_front_img = pygame.image.load("pikachu_front_beautifull.png")
+pikachu_front_img = pygame.transform.scale(pikachu_front_img, (200, 200))
 
 pikachuko_img = pygame.image.load("pikachuuuuuu.png")
 pikachuko_img = pygame.transform.scale(pikachuko_img, (250, 141))
@@ -60,6 +60,13 @@ victory_full_sound.set_volume(0.9)
 pikachu_sound = pygame.mixer.Sound("./sounds/pikapika_big.wav")
 
 listen_sound_path = pygame.mixer.Sound("./sounds/listening.mp3")
+
+pikachu_e_charge = pygame.mixer.Sound("./sounds/echarge.wav")
+
+
+# play pikachu sound
+def play_pikachu_ready():
+    pygame.mixer.Sound.play(pikachu_e_charge)
 
 def play_listen_sound():
     pygame.mixer.Sound.play(listen_sound_path)
@@ -205,8 +212,8 @@ desired_x_pikako = 115 - 20
 desired_y_pikako = 395 + 70
 
 # Desired position for Meowth
-desired_x_meo = 450
-desired_y_meo = 150
+desired_x_meo = 480
+desired_y_meo = 160
 
 clock = pygame.time.Clock()
 FPS = 60
@@ -239,8 +246,8 @@ def check_winner():
             meowth.winner_banner_displayed = True  # Add this line
             if pikachu.hp > meowth.hp:
                 pikachu.image = pikachu_front_img
-                pikachu_winner_pos_x = desired_x_pika -50
-                pikachu_winner_pos_y = desired_y_pika - 60  # Adjust this value to move Pikachu's image higher
+                pikachu_winner_pos_x = desired_x_pika  + 30
+                pikachu_winner_pos_y = desired_y_pika  # Adjust this value to move Pikachu's image higher
                 screen.blit(pikachu.image, (pikachu_winner_pos_x, pikachu_winner_pos_y))
 
             elif meowth.hp > pikachu.hp:
@@ -488,7 +495,7 @@ def intro_scene():
     
     waiting = True
     def text_generate(sound, text, text_delay):
-        font = pygame.font.Font('Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
+        font = pygame.font.Font('fonts/Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
         channel2.play(sound)
 
@@ -666,7 +673,7 @@ def playagain_scene(win):
     
     waiting = True
     def text_generate(sound, text, text_delay):
-        font = pygame.font.Font('Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
+        font = pygame.font.Font('fonts/Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
         channel2.play(sound)
 
@@ -889,6 +896,7 @@ def battle_scene():
                     print(command)
 
                     if (command["command"] == "thunder"):
+                        play_pikachu_ready()
                         timedelay = random.randint(5000, 7000)
                         pikachu.attack_name = "Thunderbolt"
                         pikachu.attack_power = command["amount"]*40/10000
@@ -984,7 +992,7 @@ def battle_scene():
         if meowth.visible:
             screen.blit(meowth.image, (desired_x_meo, desired_y_meo))
         elif meowth.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
-            screen.blit(meowthko_img, (desired_x_meo, desired_y_meo))
+            screen.blit(meowthko_img, (desired_x_meo + 20, desired_y_meo + 20))
 
         if animation_playing:
             if player_turn:
