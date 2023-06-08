@@ -35,8 +35,8 @@ meowthko_img = pygame.transform.scale(meowthko_img, (250, 250))
 ko_img = pygame.image.load("KO.png")
 ko_img = pygame.transform.scale(ko_img, (250, 125))  # Adjust the size as needed
 
-pikachu_front_img = pygame.image.load("pikachu_front_img.png")
-pikachu_front_img = pygame.transform.scale(pikachu_front_img, (320, 320))
+pikachu_front_img = pygame.image.load("pikachu_front_beautifull.png")
+pikachu_front_img = pygame.transform.scale(pikachu_front_img, (200, 200))
 
 pikachuko_img = pygame.image.load("pikachuuuuuu.png")
 pikachuko_img = pygame.transform.scale(pikachuko_img, (250, 141))
@@ -253,8 +253,8 @@ desired_x_pikako = 115 - 20
 desired_y_pikako = 395 + 70
 
 # Desired position for Meowth
-desired_x_meo = 450
-desired_y_meo = 150
+desired_x_meo = 480
+desired_y_meo = 160
 
 clock = pygame.time.Clock()
 FPS = 60
@@ -314,8 +314,8 @@ def check_winner():
             meowth.winner_banner_displayed = True  # Add this line
             if pikachu.hp > meowth.hp:
                 pikachu.image = pikachu_front_img
-                pikachu_winner_pos_x = desired_x_pika -50
-                pikachu_winner_pos_y = desired_y_pika - 60  # Adjust this value to move Pikachu's image higher
+                pikachu_winner_pos_x = desired_x_pika + 30
+                pikachu_winner_pos_y = desired_y_pika  # Adjust this value to move Pikachu's image higher
                 screen.blit(pikachu.image, (pikachu_winner_pos_x, pikachu_winner_pos_y))
 
             elif meowth.hp > pikachu.hp:
@@ -478,10 +478,10 @@ def draw_command_box():
     border_size = 2  # The size of the border. Adjust this to your desired size.
 
     # Load the command icons.
-    pikachu_icon_img = pygame.image.load('iconss/pikachu_icon.png')
-    thunder_icon_img = pygame.image.load('iconss/thunder_icon.png')
-    electricball_icon_img = pygame.image.load('iconss/electricball_icon.png')
-    irontail_icon_img = pygame.image.load('iconss/irontail_icon.png')
+    pikachu_icon_img = pygame.image.load('icons/pikachu_icon.png')
+    thunder_icon_img = pygame.image.load('icons/thunder_icon.png')
+    electricball_icon_img = pygame.image.load('icons/electricball_icon.png')
+    irontail_icon_img = pygame.image.load('icons/irontail_icon.png')
 
     # Scale the icons.
     icon_scaled_width = 60  # Adjust this to your desired size.
@@ -502,7 +502,7 @@ def draw_command_box():
 
     # Define the text.
     # font = pygame.font.Font(None, 30)  # Adjust the font size to fit your command box.
-    font = pygame.font.Font('Arial_Unicode.ttf', 12)
+    font = pygame.font.Font('fonts/Arial_Unicode.ttf', 12)
     text_color = (18, 17, 15)  # The color of the text.
 
     pikachu_text = font.render("PIKACHU", True, text_color)
@@ -510,7 +510,7 @@ def draw_command_box():
     electricball_text = font.render("QUẢ CẦU ĐIỆN", True, text_color)
     irontail_text = font.render("ĐUÔI THÉP", True, text_color)
     # instruction_text = font.render("Đọc to Pikachu để kích hoạt và ra lệnh", True, text_color)
-    font_instruction = pygame.font.Font('Arial_Unicode.ttf', 25)
+    font_instruction = pygame.font.Font('fonts/Arial_Unicode.ttf', 25)
 
     instruction_text = font_instruction.render("Hô to Pikachu và ra lệnh", True, text_color)
 
@@ -716,7 +716,7 @@ def game_loop():
         if meowth.visible:
             screen.blit(meowth.image, (desired_x_meo, desired_y_meo))
         elif meowth.defeated:  # Add this condition to display meowthko_img when Meowth is defeated
-            screen.blit(meowthko_img, (desired_x_meo, desired_y_meo))
+            screen.blit(meowthko_img, (desired_x_meo + 20, desired_y_meo + 20))
 
         if animation_playing:
             if player_turn:
