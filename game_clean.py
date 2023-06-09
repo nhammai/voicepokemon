@@ -21,28 +21,28 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("NLPoké Adventure: Pikachu and The Multiverse")
 
 # Load and scale images
-bg_img = pygame.image.load("bg_img4.png")
+bg_img = pygame.image.load("Graphics/bg_img4.png")
 bg_img = pygame.transform.scale(bg_img, (width, height))
 
-pikachu_img = pygame.image.load("pikachu_img.png")
+pikachu_img = pygame.image.load("Graphics/pikachu_img.png")
 pikachu_img = pygame.transform.scale(pikachu_img, (200, 200))
 
-meowth_img = pygame.image.load("meowth_img.png")
+meowth_img = pygame.image.load("Graphics/meowth_img.png")
 meowth_img = pygame.transform.scale(meowth_img, (250, 250))
 
-meowthko_img = pygame.image.load("meowthko_img.png")
+meowthko_img = pygame.image.load("Graphics/meowthko_img.png")
 meowthko_img = pygame.transform.scale(meowthko_img, (250, 250))
 
-ko_img = pygame.image.load("KO.png")
+ko_img = pygame.image.load("Graphics/KO.png")
 ko_img = pygame.transform.scale(ko_img, (250, 125))  # Adjust the size as needed
 
-pikachu_front_img = pygame.image.load("pikachu_front_beautifull.png")
+pikachu_front_img = pygame.image.load("Graphics/pikachu_front_beautifull.png")
 pikachu_front_img = pygame.transform.scale(pikachu_front_img, (200, 200))
 
-pikachuko_img = pygame.image.load("pikachuuuuuu.png")
+pikachuko_img = pygame.image.load("Graphics/pikachuuuuuu.png")
 pikachuko_img = pygame.transform.scale(pikachuko_img, (250, 141))
 
-meowth_win_img = pygame.image.load("meowth_win.png")
+meowth_win_img = pygame.image.load("Graphics/meowth_win.png")
 meowth_win_img = pygame.transform.scale(meowth_win_img, (250, 250))
 
 
@@ -100,14 +100,14 @@ def load_animation_images(folder_path):
     return animation_imgs
 
 # Load animation file
-thunder_imgs = load_animation_images("animation/thunder")
-electricball_imgs = load_animation_images("animation/electricball4")
-irontail_imgs = load_animation_images("animation/irontail")
-bite_imgs = load_animation_images("animation/bite")
-bomb_imgs = load_animation_images("animation/bomb")
-scratch_imgs = load_animation_images("animation/scratch")
-thunder_weak_imgs = load_animation_images("animation/thunder_weak")
-thunder_super = load_animation_images("animation/thunder_tim")
+thunder_imgs = load_animation_images("Graphics/animation/thunder")
+electricball_imgs = load_animation_images("Graphics/animation/electricball4")
+irontail_imgs = load_animation_images("Graphics/animation/irontail")
+bite_imgs = load_animation_images("Graphics/animation/bite")
+bomb_imgs = load_animation_images("Graphics/animation/bomb")
+scratch_imgs = load_animation_images("Graphics/animation/scratch")
+thunder_weak_imgs = load_animation_images("Graphics/animation/thunder_weak")
+thunder_super = load_animation_images("Graphics/animation/thunder_tim")
 
 
 # animation offset (location of the animate)
@@ -346,17 +346,17 @@ def intro_scene():
     margin = 50
 
     # Load Images and Sounds
-    bg_image = pygame.image.load('intro_image/backgroundblank.png')
+    bg_image = pygame.image.load('Graphics/intro_image/backgroundblank.png')
     bg_image = pygame.transform.scale(bg_image, (screen_width, screen_height))  # Resize bg_image to fit the screen
 
-    katsumi_image = pygame.image.load('intro_image/katsumi.png')
+    katsumi_image = pygame.image.load('Graphics/intro_image/katsumi.png')
     katsumi_image = pygame.transform.scale(katsumi_image, (200, 412))
     
         # Load Images and Sounds
-    scene0 = pygame.image.load('guide/scene_0.png')
+    scene0 = pygame.image.load('Graphics/guide/scene_0.png')
     scene0 = pygame.transform.scale(bg_image, (screen_width, screen_height)) 
     # Load Psyduck image
-    psyduck_image = pygame.image.load('intro_image/psyduck.png')
+    psyduck_image = pygame.image.load('Graphics/intro_image/psyduck.png')
     psyduck_image = pygame.transform.scale(psyduck_image, (142, 200))  # Resize psyduck_image to fit desired dimensions
 
     # Audio
@@ -495,7 +495,7 @@ def intro_scene():
     
     waiting = True
     def text_generate(sound, text, text_delay):
-        font = pygame.font.Font('fonts/Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
+        font = pygame.font.Font('Fonts/Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
         channel2.play(sound)
 
@@ -600,17 +600,17 @@ def playagain_scene(win):
     margin = 50
 
     # Load Images and Sounds
-    bg_image = pygame.image.load('intro_image/backgroundblank.png')
+    bg_image = pygame.image.load('Graphics/intro_image/backgroundblank.png')
     bg_image = pygame.transform.scale(bg_image, (screen_width, screen_height))  # Resize bg_image to fit the screen
 
-    katsumi_image = pygame.image.load('intro_image/katsumi.png')
+    katsumi_image = pygame.image.load('Graphics/intro_image/katsumi.png')
     katsumi_image = pygame.transform.scale(katsumi_image, (200, 412))
     
         # Load Images and Sounds
-    scene0 = pygame.image.load('guide/scene_0.png')
+    scene0 = pygame.image.load('Graphics/guide/scene_0.png')
     scene0 = pygame.transform.scale(bg_image, (screen_width, screen_height)) 
     # Load Psyduck image
-    psyduck_image = pygame.image.load('intro_image/psyduck.png')
+    psyduck_image = pygame.image.load('Graphics/intro_image/psyduck.png')
     psyduck_image = pygame.transform.scale(psyduck_image, (142, 200))  # Resize psyduck_image to fit desired dimensions
 
     # Audio
@@ -673,7 +673,7 @@ def playagain_scene(win):
     
     waiting = True
     def text_generate(sound, text, text_delay):
-        font = pygame.font.Font('fonts/Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
+        font = pygame.font.Font('Fonts/Arial_Unicode.ttf', 20)  # Use a smaller font size that supports Vietnamese
 
         channel2.play(sound)
 
@@ -783,7 +783,7 @@ def draw_databox(pokemon, x, y):
 
     # Load the correct databox image based on the Pokemon.
     if pokemon.name == "Pikachu":
-        databox_img = pygame.image.load('databox_normal.png')
+        databox_img = pygame.image.load('Graphics/databox_normal.png')
         # Scale the image.
         scaled_width = 320  # You can adjust this as needed.
         scaled_height = (scaled_width*84)/260  # You can adjust this as needed.
@@ -795,7 +795,7 @@ def draw_databox(pokemon, x, y):
         hp_position = (x + 190, y + 68)
         health_bar_position = (x + 167, y + 51)
     else:
-        databox_img = pygame.image.load('databox_normal_foe.png')
+        databox_img = pygame.image.load('Graphics/databox_normal_foe.png')
                 # Scale the image.
         scaled_width = 320  # You can adjust this as needed.
         scaled_height = (scaled_width*62)/260  # You can adjust this as needed.
@@ -1010,7 +1010,7 @@ def battle_scene():
                 # Get the screen width.
         screen_width = screen.get_rect().width
 
-        pikachu_databox_width = pygame.image.load('databox_normal.png').get_rect().width
+        pikachu_databox_width = pygame.image.load('Graphics/databox_normal.png').get_rect().width
         
         pikachu_databox_x = screen_width - pikachu_databox_width
         meowth_databox_x = 0
@@ -1086,7 +1086,7 @@ def display_image_with_fade(image):
 
 def play_credit_scene():
     # Load the images and sound
-    credit_folder = 'credit'
+    credit_folder = 'Graphics/credit'
     credit_images = []
     for file in os.listdir(credit_folder):
         if file.endswith('.png'):
